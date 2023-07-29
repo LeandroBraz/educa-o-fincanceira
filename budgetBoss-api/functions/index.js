@@ -11,6 +11,9 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+/* eslint-disable no-trailing-spaces */
+
+
 
 
 const { onRequest } = require("firebase-functions/v2/https");
@@ -19,12 +22,6 @@ const logger = require("firebase-functions/logger");
 const functions = require('firebase-functions');
 const admin = require("firebase-admin");
 const app = require("express")();
-const port = 8080;
-
-
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
 
 admin.initializeApp();
 const dbUserAtivos = admin.firestore().collection("usuariosAtivos");
@@ -45,14 +42,12 @@ app.get("/usuariosAtivos", function (request, response) {
 })
 
 app.get("/usuariosAtivos/:senha/:nome", function (request, response) {
-
   const nome = request.params.nome;
   const senha = request.params.senha;
-  // const usersRef = db.collection('usuariosAtivos');
-
+  
   const query = dbUserAtivos.where('senha', '==', senha)
     .where('nome', '==', nome)
-    .limit(1); // Limita a consulta a um único resultado
+    .limit(1); // Limit the query to a single result
 
   query.get()
     .then(function (snapshot) {
@@ -68,7 +63,7 @@ app.get("/usuariosAtivos/:senha/:nome", function (request, response) {
             ...doc.data()
           };
         });
-        response.json(usuarioEncontrado);
+        response.json(usuarioEncontrado); 
       }
     })
     .catch(function (error) {
@@ -90,28 +85,6 @@ app.get("/todos", function (request, response) {
       response.json(todos);
     });
 })
-
-// app.post("/usuariosAtivos", function (request, response) {
-//   const novoUsuario = {
-//     senha: request.body.senha,
-//     nome: request.body.nome,
-//     saldo: request.body.saldo,
-//     sexo: request.body.sexo,
-//     data_nasc: request.body.data_nasc,
-//     uuid: request.body.uuid
-//   };
-
-//   dbUserAtivos.collection("usuariosAtivos")
-//     .add(novoUsuario)
-//     .then(function (docRef) {
-//       response.json({ success: true, id: docRef.id });
-//     })
-//     .catch(function (error) {
-//       response.status(500).json({ error: "Ocorreu um erro ao criar o usuário ativo." });
-//     });
-
-
-// })
 
 app.post("/usuariosAtivos", function (request, response) {
 
