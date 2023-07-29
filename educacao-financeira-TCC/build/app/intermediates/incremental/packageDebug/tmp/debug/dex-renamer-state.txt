@@ -1,4 +1,4 @@
-#Sat Jul 22 17:02:35 BRT 2023
-base.0=C\:\\Users\\Leandro Braz\\Desktop\\TCC\\educacao-financeira-TCC\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+#Sat Jul 29 14:34:24 BRT 2023
+base.0=C\:\\educa-o-fincanceira\\educacao-financeira-TCC\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

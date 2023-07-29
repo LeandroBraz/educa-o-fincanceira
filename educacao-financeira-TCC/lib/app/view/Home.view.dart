@@ -37,7 +37,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final MainDrawer mainDrawer = MainDrawer();
-
+  bool mostrarQuiz = false;
   bool mostrarFase1 = false;
   bool mostrarFase2 = false;
   bool mostrarFase3 = false;

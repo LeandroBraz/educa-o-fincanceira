@@ -1,15 +1,10 @@
-import 'package:app_educacao_financeira/app/DAO/dataBaseInMetas.dart';
-import 'package:app_educacao_financeira/app/controller/controller.dart';
-import 'package:app_educacao_financeira/app/data/home_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:app_educacao_financeira/app/view/ModuloSelecao.dart';
 import 'package:flutter/services.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import '../DAO/Auths.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'dart:convert';
 import '../view/cadastroLogin.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,12 +12,12 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-Future<dynamic> loginUsuario(senha, nome) async {
+Future<Usuario> loginUsuario(senha, nome) async {
   var baseUrl =
       "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/usuariosAtivos";
 
   // Montando a URL com os parâmetros senha e nome
-  var url = Uri.parse('$baseUrl?senha=$senha&nome=$nome');
+  var url = Uri.parse('$baseUrl/$senha/$nome');
 
   // Realizando a solicitação HTTP
   var response = await http.get(url);
@@ -30,11 +25,12 @@ Future<dynamic> loginUsuario(senha, nome) async {
 
   if (response.statusCode == 200) {
     // A requisição foi bem-sucedida
-    var data = response.body;
-    return data;
+    var data = json.decode(response.body);
+
+    return Usuario.fromJson(data);
   } else {
     // A requisição falhou
-    print('Erro: ${response.statusCode}');
+    throw Exception('Erro: ${response.statusCode}');
   }
 }
 
