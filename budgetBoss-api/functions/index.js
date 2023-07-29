@@ -87,19 +87,24 @@ app.get("/todos", function (request, response) {
 })
 
 app.post("/usuariosAtivos", function (request, response) {
-
-  dbUserAtivos.add({
+  const userToAdd = {
     senha: request.body.senha,
     nome: request.body.nome,
     saldo: request.body.saldo,
     sexo: request.body.sexo,
     data_nasc: request.body.data_nasc,
     uuid: request.body.uuid
-  })
+  };
+
+  dbUserAtivos.add(userToAdd)
     .then(function () {
       response.json({ general: "Works" });
     })
-})
+    .catch(function (error) {
+      console.error("Error adding user: ", error);
+      response.status(500).json({ error: "Failed to add user" });
+    });
+});
 
 exports.api = functions.https.onRequest(app)
 
