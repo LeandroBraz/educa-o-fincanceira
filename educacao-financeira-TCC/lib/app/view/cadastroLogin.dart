@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:http/http.dart' as http;
 import '../DAO/SCRIPT_IN_METAS_BASE.dart';
 import '../DAO/dataBaseInMetas.dart';
 import '../pages/login_page.dart';
@@ -35,10 +39,25 @@ void _exibemensagemDeCadastro(context) {
 
 class _CadastroState extends State<Cadastro> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController nome = TextEditingController();
   final TextEditingController senha = TextEditingController();
   final TextEditingController confirmacaoSenha = TextEditingController();
+  final TextEditingController dataNascimento = TextEditingController();
+  String? sexoValue;
+
+  String _applyDateFormat(String value) {
+    if (value.length <= 2) {
+      return value;
+    } else if (value.length <= 4) {
+      return '${value.substring(0, 2)}/${value.substring(2)}';
+    } else if (value.length <= 6) {
+      return '${value.substring(0, 2)}/${value.substring(2, 4)}/${value.substring(4)}';
+    } else if (value.length <= 8) {
+      return '${value.substring(0, 2)}/${value.substring(2, 4)}/${value.substring(4, 8)}';
+    } else {
+      return '${value.substring(0, 2)}/${value.substring(2, 4)}/${value.substring(4, 8)}';
+    }
+  }
 
   void validarSenhas(context) {
     String senhaDigitada = senha.text;
@@ -66,39 +85,57 @@ class _CadastroState extends State<Cadastro> {
     }
   }
 
-  void cadastrar(context) {
-    setState(() async {
-      Uuid uuid = Uuid();
-      String myUuid = uuid.v4();
-      try {
-        await SalvarUsuario(
-          myUuid,
-          nome.text.toString(),
-          senha.text.toString(),
-          0,
-        );
+  void cadastrar(context) async {
+    String apiUrl =
+        "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/usuariosAtivos";
+    Uuid uuid = Uuid();
+    String myUuid = uuid.v4();
+
+    Map<String, dynamic> userData = {
+      "senha": senha.text.toString(),
+      "nome": nome.text.toString(),
+      "saldo": 0,
+      "sexo": sexoValue,
+      "data_nasc": dataNascimento.text.toString(),
+      "uuid": myUuid,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(userData),
+      );
+
+      if (response.statusCode == 200) {
         _exibemensagemDeCadastro(context);
-      } catch (e) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text(
-                  "Cadastro não Realizado, ocorreu um problema com os dados"),
-              actions: [
-                TextButton(
-                    child: Text("ok"),
-                    onPressed: () {
-                      print("");
-                    }),
-              ],
-            );
-          },
-        );
+      } else {
+        throw Exception("Falha ao adicionar usuário: ${response.statusCode}");
       }
-      ;
-    });
+    } catch (e) {
+      print('Erro: $e');
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(
+                "Cadastro não Realizado, ocorreu um problema com os dados"),
+            actions: [
+              TextButton(
+                child: Text("ok"),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -113,114 +150,153 @@ class _CadastroState extends State<Cadastro> {
             right: 40,
           ),
           color: Colors.white,
-          child: ListView(children: <Widget>[
-            SizedBox(
-                width: 250,
-                height: 250,
-                child: Image.asset("assets/imagens/logo_2.png")),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: nome,
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
+          child: ListView(
+            children: <Widget>[
+              SizedBox(height: 20),
+              TextFormField(
+                controller: nome,
+                autofocus: true,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
                   labelText: "Nome",
                   labelStyle: TextStyle(
                     color: Colors.black38,
                     fontWeight: FontWeight.w400,
                     fontSize: 20,
-                  )),
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: senha,
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              decoration: InputDecoration(
+                  ),
+                ),
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: senha,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: InputDecoration(
                   labelText: "Senha",
                   labelStyle: TextStyle(
                     color: Colors.black38,
                     fontWeight: FontWeight.w400,
                     fontSize: 20,
-                  )),
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            TextFormField(
-              controller: confirmacaoSenha,
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Confirmação de Senha",
-                labelStyle: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20,
-                ),
-              ),
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Container(
-              height: 60,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0.3, 1],
-                  colors: [
-                    Color(0xFF00C853),
-                    Color(0xFF2E7D32),
-                  ],
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-              ),
-              child: SizedBox.expand(
-                child: TextButton(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "Cadastrar",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                      Container(
-                        child: SizedBox(
-                          child: Image.asset("assets/imagens/bone.png"),
-                          height: 70,
-                          width: 70,
-                        ),
-                      ),
-                    ],
                   ),
-                  onPressed: () {
-                    print(_formKey.currentState);
-                    if (_formKey.currentState!.validate()) {
-                      validarSenhas(context);
-                    }
-                  },
+                ),
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 40),
+              TextFormField(
+                controller: confirmacaoSenha,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Confirmação de Senha",
+                  labelStyle: TextStyle(
+                    color: Colors.black38,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                  ),
+                ),
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 40),
+              TextFormField(
+                controller: dataNascimento,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    // Implementing the date format mask
+                    final newString = _applyDateFormat(newValue.text);
+                    return TextEditingValue(
+                      text: newString,
+                      selection:
+                          TextSelection.collapsed(offset: newString.length),
+                    );
+                  }),
+                ],
+                decoration: InputDecoration(
+                  labelText: "Data de Nascimento (DD/MM/AAAA)",
+                  labelStyle: TextStyle(
+                    color: Colors.black38,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                  ),
+                ),
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 40),
+              DropdownButtonFormField<String>(
+                value: sexoValue,
+                onChanged: (newValue) {
+                  setState(() {
+                    sexoValue = newValue;
+                  });
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: 'M',
+                    child: Text('Masculino'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'F',
+                    child: Text('Feminino'),
+                  ),
+                ],
+                decoration: InputDecoration(
+                  labelText: "Sexo",
+                  labelStyle: TextStyle(
+                    color: Colors.black38,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                  ),
                 ),
               ),
-            ),
-          ]),
+              SizedBox(height: 40),
+              Container(
+                height: 60,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0.3, 1],
+                    colors: [Color(0xFF00C853), Color(0xFF2E7D32)],
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: SizedBox.expand(
+                  child: TextButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Cadastrar",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        Container(
+                          child: SizedBox(
+                            child: Image.asset("assets/imagens/bone.png"),
+                            height: 70,
+                            width: 70,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        validarSenhas(context);
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
