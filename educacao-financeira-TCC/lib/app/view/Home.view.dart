@@ -37,19 +37,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final MainDrawer mainDrawer = MainDrawer();
-  bool mostrarQuiz = false;
+  bool mostrarQuiz = true;
   bool mostrarFase1 = false;
   bool mostrarFase2 = false;
   bool mostrarFase3 = false;
 
-  buscarInformacao() async {
-    var usuario =
-        await buscarLogin(Auths.currentUser.nome, Auths.currentUser.senha);
-    print(usuario);
-    setState(() {
-      mostrarQuiz = usuario[0]["SALDO"] > 500;
-    });
-  }
+  // buscarInformacao() async {
+  //   var usuario =
+  //       await buscarLogin(Auths.currentUser.nome, Auths.currentUser.senha);
+  //   print(usuario);
+  //   setState(() {
+  //     //  mostrarQuiz = usuario[0]["SALDO"] > 500;
+  //   });
+  // }
 
   _openPopup(context) {
     Alert(
@@ -178,7 +178,7 @@ class _HomeState extends State<Home> {
                 title: Text("Produtos"),
               ),
               Visibility(
-                visible: mostrarFase1,
+                visible: true,
                 child: ListTile(
                   onTap: () {
                     modificarEstado(3);
