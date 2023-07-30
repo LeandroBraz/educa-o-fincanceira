@@ -27,6 +27,7 @@ admin.initializeApp();
 const dbUserAtivos = admin.firestore().collection("usuariosAtivos");
 const dbTodos = admin.firestore().collection("todos");
 
+
 app.get("/usuariosAtivos", function (request, response) {
   dbUserAtivos.get()
     .then(function (docs) {
@@ -44,10 +45,10 @@ app.get("/usuariosAtivos", function (request, response) {
 app.get("/usuariosAtivos/:senha/:nome", function (request, response) {
   const nome = request.params.nome;
   const senha = request.params.senha;
-  
+
   const query = dbUserAtivos.where('senha', '==', senha)
     .where('nome', '==', nome)
-    .limit(1); // Limit the query to a single result
+    .limit(1); 
 
   query.get()
     .then(function (snapshot) {
@@ -57,13 +58,12 @@ app.get("/usuariosAtivos/:senha/:nome", function (request, response) {
       } else {
         let usuarioEncontrado = null;
         snapshot.forEach(function (doc) {
-          // Recupera o usuário encontrado
           usuarioEncontrado = {
             id: doc.id,
             ...doc.data()
           };
         });
-        response.json(usuarioEncontrado); 
+        response.json(usuarioEncontrado);
       }
     })
     .catch(function (error) {
@@ -103,6 +103,50 @@ app.post("/usuariosAtivos", function (request, response) {
     .catch(function (error) {
       console.error("Error adding user: ", error);
       response.status(500).json({ error: "Failed to add user" });
+    });
+});
+
+app.patch("/atualizarSaldo/:uuid/:saldo", function (request, response) {
+  const uuid = request.params.uuid;
+  const novoSaldo = parseFloat(request.params.saldo);
+  
+  if (!uuid) {
+    response.status(400).json({ error: "UUID não fornecido" });
+    return;
+  }
+
+  if (isNaN(novoSaldo)) {
+    response.status(400).json({ error: "O saldo fornecido não é válido" });
+    return;
+  }
+  
+  const userRef = admin.firestore()
+  .collection("usuariosAtivos")
+  .where("uuid", "==", uuid);
+
+  userRef
+    .get()
+    .then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        response.status(404).json({ error: "Usuário não encontrado" });
+      } else {
+        const userDoc = querySnapshot.docs[0];
+        userDoc.ref
+          .update({ saldo: novoSaldo })
+          .then(() => {
+            response.json({ message: "Saldo atualizado com sucesso" });
+          })
+          .catch((error) => {
+            console.error("Error updating saldo: ", error);
+            response.status(500)
+            .json(
+              { error: "Falha ao atualizar saldo do usuário" });
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user: ", error);
+      response.status(500).json({ error: "Falha ao consultar usuário" });
     });
 });
 
