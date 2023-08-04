@@ -1,11 +1,15 @@
 import 'package:app_educacao_financeira/app/controller/controller.dart';
 import 'package:flutter/material.dart';
 
+import '../DAO/localStorage.dart';
+import '../model/Usuario.model.dart';
+
 class InProdutos extends StatelessWidget {
   String quantidade;
   String nome;
   String categoria;
-  InProdutos({ required this.nome, required this.quantidade, required this.categoria});
+  InProdutos(
+      {required this.nome, required this.quantidade, required this.categoria});
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +25,23 @@ class InProdutos extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                        margin: EdgeInsets.only(right: 5),
-                        height: 20,
-                        width: 20,
-                        child: Image.asset('assets/imagens/icon_moedas.png')),
-                    Text(
-                      "100,00",
-                      style: TextStyle(fontSize: 12),
+                      margin: EdgeInsets.only(top: 10),
+                      child: FutureBuilder<Usuario>(
+                        future: buscarDadosUsuario(),
+                        builder: (context, futuro) {
+                          if (futuro.hasData) {
+                            var usuario = futuro.data;
+                            print(usuario);
+                            return Text(usuario!.saldo.toString());
+                          } else if (futuro.hasError) {
+                            // Lidar com o erro, por exemplo, exibindo uma mensagem de erro na interface
+                            return Text("Erro ao carregar dados do usuário.");
+                          } else {
+                            // Caso ainda esteja carregando os dados do usuário, pode exibir um indicador de progresso, por exemplo:
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),

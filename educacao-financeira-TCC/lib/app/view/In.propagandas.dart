@@ -1,6 +1,21 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../DAO/dataBaseInMetas.dart';
+import '../DAO/localStorage.dart';
+import '../model/Usuario.model.dart';
+
+// Future<Usuario> buscarDadosUsuario() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String? userJson = prefs.getString('user');
+
+//   if (userJson != null) {
+//     return Usuario.fromJson(json.decode(userJson));
+//   } else {
+//     throw Exception("Usuário não encontrado no local storage.");
+//   }
+// }
 
 class InPropagandas extends StatelessWidget {
   @override
@@ -25,15 +40,19 @@ class InPropagandas extends StatelessWidget {
                         child: Image.asset('assets/imagens/icon_moedas.png')),
                     Container(
                       margin: EdgeInsets.only(top: 10),
-                      child: FutureBuilder(
-                        future: buscar(),
+                      child: FutureBuilder<Usuario>(
+                        future: buscarDadosUsuario(),
                         builder: (context, futuro) {
                           if (futuro.hasData) {
-                            var lista = futuro.data;
-                            print(lista);
-                            return Text(lista!.first["valor"].toString());
+                            var usuario = futuro.data;
+                            print(usuario);
+                            return Text(usuario!.saldo.toString());
+                          } else if (futuro.hasError) {
+                            // Lidar com o erro, por exemplo, exibindo uma mensagem de erro na interface
+                            return Text("Erro ao carregar dados do usuário.");
                           } else {
-                            return Text("00");
+                            // Caso ainda esteja carregando os dados do usuário, pode exibir um indicador de progresso, por exemplo:
+                            return CircularProgressIndicator();
                           }
                         },
                       ),

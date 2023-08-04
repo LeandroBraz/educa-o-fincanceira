@@ -6,6 +6,7 @@ import '../DAO/Auths.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../view/cadastroLogin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,9 +26,16 @@ Future<Usuario> loginUsuario(senha, nome) async {
 
   if (response.statusCode == 200) {
     // A requisição foi bem-sucedida
+    // var data = json.decode(response.body);
+    // return Usuario.fromJson(data);
     var data = json.decode(response.body);
+    var usuario = Usuario.fromJson(data);
 
-    return Usuario.fromJson(data);
+    // Salvando o usuário no local storage
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', json.encode(usuario.toMap()));
+
+    return usuario;
   } else {
     // A requisição falhou
     throw Exception('Erro: ${response.statusCode}');

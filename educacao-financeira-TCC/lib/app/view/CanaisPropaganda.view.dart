@@ -77,7 +77,8 @@ class CanaisPropag extends StatelessWidget {
                                   builder: (context) {
                                     return Dialog(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
                                       ),
                                       child: Container(
                                         height: 200,
@@ -114,12 +115,14 @@ class CanaisPropag extends StatelessWidget {
                                                         //                     20.0)),
                                                         // color: Colors.green,
                                                         onPressed: () {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                         child: Text(
                                                           "Ok",
                                                           style: TextStyle(
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 15),
                                                         )),
                                                   )
@@ -151,7 +154,6 @@ class CanaisPropag extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-
                           child: Text(_listNomesItens[index]),
                         )
                       ],
@@ -193,7 +195,8 @@ class CanaisPropag extends StatelessWidget {
                                                         child: Text(
                                                           "Deseja comprar esse item?",
                                                           style: TextStyle(
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               fontSize: 15.0),
                                                         ),
                                                       ),
@@ -220,8 +223,8 @@ class CanaisPropag extends StatelessWidget {
                                                           child: Text(
                                                             "Não",
                                                             style: TextStyle(
-                                                                color:
-                                                                    Colors.black,
+                                                                color: Colors
+                                                                    .black,
                                                                 fontSize: 15),
                                                           )),
                                                     ),
@@ -240,8 +243,8 @@ class CanaisPropag extends StatelessWidget {
                                                           child: Text(
                                                             "Sim",
                                                             style: TextStyle(
-                                                                color:
-                                                                    Colors.black,
+                                                                color: Colors
+                                                                    .black,
                                                                 fontSize: 15),
                                                           )),
                                                     )

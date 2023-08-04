@@ -8,6 +8,8 @@ import 'package:path/path.dart';
 import '../DAO/Auths.dart';
 
 import '../DAO/dataBaseInMetas.dart';
+import '../DAO/localStorage.dart';
+import '../model/Usuario.model.dart';
 
 class InMetas extends StatefulWidget {
   @override
@@ -75,17 +77,19 @@ class _InMetasState extends State<InMetas> {
                         child: Image.asset('assets/imagens/icon_moedas.png')),
                     Container(
                       margin: EdgeInsets.only(top: 10),
-                      child: FutureBuilder(
-                        future: buscar(),
+                      child: FutureBuilder<Usuario>(
+                        future: buscarDadosUsuario(),
                         builder: (context, futuro) {
                           if (futuro.hasData) {
-                            print("AQU");
-                            print(Auths.currentUser.nome);
-                            var lista = futuro.data;
-                         //   return Text(Auths.currentUser.saldo.toString());
-                            return Text(lista!.first["SALDO"].toString());
+                            var usuario = futuro.data;
+                            print(usuario);
+                            return Text(usuario!.saldo.toString());
+                          } else if (futuro.hasError) {
+                            // Lidar com o erro, por exemplo, exibindo uma mensagem de erro na interface
+                            return Text("Erro ao carregar dados do usuário.");
                           } else {
-                            return Text("00");
+                            // Caso ainda esteja carregando os dados do usuário, pode exibir um indicador de progresso, por exemplo:
+                            return CircularProgressIndicator();
                           }
                         },
                       ),
