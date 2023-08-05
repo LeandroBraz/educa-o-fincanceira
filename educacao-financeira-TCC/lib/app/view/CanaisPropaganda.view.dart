@@ -51,13 +51,19 @@ class _CanaisPropagState extends State<CanaisPropag> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                print("Pressionou  ${_listNomesItens[index]}");
+                if (_listNomesItens[index].ativo!) {
+                  print("Pressionou ${_listNomesItens[index]}");
+                }
               },
               child: Card(
-                color: Colors.green[200],
+                color: _listNomesItens[index].ativo!
+                    ? Colors.grey
+                    : Colors
+                        .green[200], // Define a cor com base no estado 'ativo'
                 elevation: 50.0,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -170,97 +176,173 @@ class _CanaisPropagState extends State<CanaisPropag> {
                                   'assets/imagens/icon_carrinho_compras.png'),
                               //     margin: EdgeInsets.only(bottom: 20),
                               onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50.0),
-                                        ),
-                                        child: Container(
-                                          height: 200,
-                                          width: 50,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(20.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Text(
-                                                          "Deseja comprar esse item?",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15.0),
+                                if (!_listNomesItens[index].ativo!) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50.0),
+                                          ),
+                                          child: Container(
+                                            height: 200,
+                                            width: 50,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          child: Text(
+                                                            "Deseja comprar esse item?",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 15.0),
+                                                          ),
                                                         ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Container(
+                                                        child: TextButton(
+                                                            // shape: RoundedRectangleBorder(
+                                                            //     borderRadius:
+                                                            //         BorderRadius
+                                                            //             .circular(
+                                                            //                 20.0)),
+                                                            // color: Colors.red,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                              "Não",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15),
+                                                            )),
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: [
-                                                    Container(
-                                                      child: TextButton(
-                                                          // shape: RoundedRectangleBorder(
-                                                          //     borderRadius:
-                                                          //         BorderRadius
-                                                          //             .circular(
-                                                          //                 20.0)),
-                                                          // color: Colors.red,
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Text(
-                                                            "Não",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 15),
-                                                          )),
-                                                    ),
-                                                    Container(
-                                                      child: TextButton(
-                                                          // shape: RoundedRectangleBorder(
-                                                          //     borderRadius:
-                                                          //         BorderRadius
-                                                          //             .circular(
-                                                          //                 20.0)),
-                                                          // color: Colors.green,
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                            setState(() {
-                                                              isCardEnabled =
-                                                                  false; // Desabilitar o card aqui
-                                                            });
-                                                          },
-                                                          child: Text(
-                                                            "Sim",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 15),
-                                                          )),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
+                                                      Container(
+                                                        child: TextButton(
+                                                            // shape: RoundedRectangleBorder(
+                                                            //     borderRadius:
+                                                            //         BorderRadius
+                                                            //             .circular(
+                                                            //                 20.0)),
+                                                            // color: Colors.green,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              setState(() {
+                                                                _listNomesItens[
+                                                                            index]
+                                                                        .ativo =
+                                                                    true; // Desabilitar o card aqui
+                                                              });
+                                                            },
+                                                            child: Text(
+                                                              "Sim",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15),
+                                                            )),
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    });
+                                        );
+                                      });
+                                } else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50.0),
+                                          ),
+                                          child: Container(
+                                            height: 200,
+                                            width: 50,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          child: Text(
+                                                            "item comprado",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 15.0),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Container(
+                                                        child: TextButton(
+                                                            // shape: RoundedRectangleBorder(
+                                                            //     borderRadius:
+                                                            //         BorderRadius
+                                                            //             .circular(
+                                                            //                 20.0)),
+                                                            // color: Colors.red,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                              "Ok",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15),
+                                                            )),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                }
                               },
                             )),
                         Container(
