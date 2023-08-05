@@ -3,8 +3,14 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../DAO/SCRIPT_IN_METAS_BASE.dart';
+import '../model/objetoGenerico.dart';
 
-class CanaisPropag extends StatelessWidget {
+class CanaisPropag extends StatefulWidget {
+  @override
+  State<CanaisPropag> createState() => _CanaisPropagState();
+}
+
+class _CanaisPropagState extends State<CanaisPropag> {
   final List<String> _listitem = [
     'assets/imagens/icon_instagram.png',
     'assets/imagens/icon_twitter.png',
@@ -12,18 +18,13 @@ class CanaisPropag extends StatelessWidget {
     'assets/imagens/icon_youtube.png',
   ];
 
-  // final List<String> _listNomesItens = [
-  //   'Internet',
-  //   'Televisão',
-  //   'Jornal',
-  //   'Rádio',
-  // ];
+  bool isCardEnabled = true;
 
-  final List<String> _listNomesItens = [
-    'Instagram',
-    'Twitter',
-    'Facebook',
-    'Youtube',
+  final List<ObjetoGenerico> _listNomesItens = [
+    ObjetoGenerico(nome: 'Instagram', preco: 100, ativo: false),
+    ObjetoGenerico(nome: 'Twitter', preco: 200, ativo: false),
+    ObjetoGenerico(nome: 'Facebook', preco: 123, ativo: false),
+    ObjetoGenerico(nome: 'Twitter', preco: 500, ativo: false),
   ];
 
   final List<String> _listExpl = [
@@ -154,7 +155,7 @@ class CanaisPropag extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          child: Text(_listNomesItens[index]),
+                          child: Text(_listNomesItens[index].nome!),
                         )
                       ],
                     ),
@@ -239,6 +240,10 @@ class CanaisPropag extends StatelessWidget {
                                                           onPressed: () {
                                                             Navigator.pop(
                                                                 context);
+                                                            setState(() {
+                                                              isCardEnabled =
+                                                                  false; // Desabilitar o card aqui
+                                                            });
                                                           },
                                                           child: Text(
                                                             "Sim",
@@ -260,7 +265,7 @@ class CanaisPropag extends StatelessWidget {
                             )),
                         Container(
                             child: Text(
-                              "RS: 100,00",
+                              "RS: ${_listNomesItens[index].preco!.toStringAsFixed(2)}",
                               style: TextStyle(),
                             ),
                             margin: EdgeInsets.only(left: 10))
