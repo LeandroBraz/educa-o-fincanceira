@@ -1,11 +1,19 @@
+import 'dart:convert';
+
+import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
+import 'package:app_educacao_financeira/app/model/dadosCompra.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../DAO/SCRIPT_IN_METAS_BASE.dart';
 import '../model/objetoGenerico.dart';
+import 'package:http/http.dart' as http;
+import '../DAO/localStorage.dart';
 
 class CanaisPropag extends StatefulWidget {
+  const CanaisPropag({super.key});
+
   @override
   State<CanaisPropag> createState() => _CanaisPropagState();
 }
@@ -20,12 +28,7 @@ class _CanaisPropagState extends State<CanaisPropag> {
 
   bool isCardEnabled = true;
 
-  final List<ObjetoGenerico> _listNomesItens = [
-    ObjetoGenerico(nome: 'Instagram', preco: 100, ativo: false),
-    ObjetoGenerico(nome: 'Twitter', preco: 200, ativo: false),
-    ObjetoGenerico(nome: 'Facebook', preco: 123, ativo: false),
-    ObjetoGenerico(nome: 'Twitter', preco: 500, ativo: false),
-  ];
+   List<ObjetoGenerico> _listNomesItens = [];
 
   final List<String> _listExpl = [
     'Venda x produtos em x dias',
@@ -33,17 +36,28 @@ class _CanaisPropagState extends State<CanaisPropag> {
     'Venda x produtos em x dias',
     'Venda x produtos em x dias',
   ];
+  bool _dadosCarregados = false;
+  String? nomeDoCanalParaCompra;
+  List<DadosCompra> dadosCompras = [];
+
+  @override
+  void initState() {
+    getDadosCompra();
+    super.initState();
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if(_dadosCarregados){
     return Expanded(
       flex: 5,
       child: Container(
         color: Colors.purple[50],
         child: GridView.builder(
-          padding: EdgeInsets.all(100),
+          padding: const EdgeInsets.all(100),
           itemCount: 4,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 70,
             mainAxisSpacing: 20,
@@ -176,6 +190,8 @@ class _CanaisPropagState extends State<CanaisPropag> {
                                   'assets/imagens/icon_carrinho_compras.png'),
                               //     margin: EdgeInsets.only(bottom: 20),
                               onTap: () {
+                                  //captura o nome do canal ao clicar
+                                 nomeDoCanalParaCompra = _listNomesItens[index].nome;
                                 if (!_listNomesItens[index].ativo!) {
                                   showDialog(
                                       context: context,
@@ -247,6 +263,7 @@ class _CanaisPropagState extends State<CanaisPropag> {
                                                             //                 20.0)),
                                                             // color: Colors.green,
                                                             onPressed: () {
+                                                              calcularImpactoAnuncio(nomeDoCanalParaCompra!);
                                                               Navigator.pop(
                                                                   context);
                                                               setState(() {
@@ -361,5 +378,78 @@ class _CanaisPropagState extends State<CanaisPropag> {
         ),
       ),
     );
+    } else {
+      return const Center(
+      child: CircularProgressIndicator(), 
+        );
+    }
   }
+
+void calcularImpactoAnuncio(String nomeAnuncio) async {
+  Usuario u = await buscarDadosUsuario();
+  int custoAnuncio = 0;
+
+  switch (nomeAnuncio) {
+    case 'Instagram':
+      custoAnuncio = 100;
+      break;
+    case 'Twitter':
+      custoAnuncio = 150;
+      break;
+    case 'Facebook':
+      custoAnuncio = 200;
+      break;
+    case 'Youtube':
+      custoAnuncio = 300;
+      break;
+    default:
+      break;
+  }
+
+  if (custoAnuncio > 0 && u.saldo! >= custoAnuncio) {
+    u.saldo = u.saldo! - custoAnuncio;
+    print("Anúncio $nomeAnuncio foi comprado por $custoAnuncio coins. ${u.saldo}");
+    // aplicar o impacto do anúncio
+  } else {
+    print("Saldo insuficiente para comprar o anúncio $nomeAnuncio.");
+  }
+}
+
+
+
+  //Metodo GET de servico de dadosCompra
+Future<DadosCompra> getDadosCompra() async {
+  Usuario u = await buscarDadosUsuario();
+  print(u.uuid);
+  String url =
+    "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/dadosCompra/${u.uuid}/";
+  
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final dadosCompra = DadosCompra.fromJson(json);
+    return dadosCompra;
+  } else {
+    throw Exception('Failed to load dados compra');
+  }
+}
+
+  Future<void> loadData() async {
+  try {
+    DadosCompra dadosCompra = await getDadosCompra();
+    if (dadosCompra != null) {
+      setState(() {
+        _listNomesItens.add(ObjetoGenerico(nome: 'Instagram', preco: 150, ativo: dadosCompra.canalInstagram));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Twitter', preco: 150, ativo: dadosCompra.canalTwitter));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Facebook', preco: 150, ativo: dadosCompra.canalFacebook));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Youtube', preco: 150, ativo: dadosCompra.canalYoutube));
+        _dadosCarregados = true;
+      });
+    }
+  } catch (error) {
+    print('erro ao add objt na lista de canais ');
+  }
+}
+
+
 }

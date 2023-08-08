@@ -5,7 +5,7 @@ class ObjetoGenerico {
   int? preco;
   bool? ativo;
 
-  ObjetoGenerico({this.nome, this.preco, this.ativo});
+  ObjetoGenerico({ required this.nome, required this.preco, required this.ativo});
 
   ObjetoGenerico.fromJson(Map<String, dynamic> json) {
     nome = json['nome'];
