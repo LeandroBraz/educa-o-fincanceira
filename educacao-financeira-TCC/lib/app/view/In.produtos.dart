@@ -1,15 +1,41 @@
+import 'dart:convert';
+
 import 'package:app_educacao_financeira/app/controller/controller.dart';
+import 'package:app_educacao_financeira/app/model/dadosCompra.dart';
 import 'package:flutter/material.dart';
 
 import '../DAO/localStorage.dart';
 import '../model/Usuario.model.dart';
+import '../model/objetoGenerico.dart';
+import 'package:http/http.dart' as http;
 
-class InProdutos extends StatelessWidget {
-  String quantidade;
-  String nome;
-  String categoria;
+class InProdutos extends StatefulWidget {
+  String? quantidade;
+  String? nome;
+  String? categoria;
   InProdutos(
-      {required this.nome, required this.quantidade, required this.categoria});
+      { this.nome, this.quantidade,  this.categoria});
+
+  @override
+  State<InProdutos> createState() => _InProdutosState();
+}
+
+class _InProdutosState extends State<InProdutos> {
+   List<ObjetoGenerico> _listNomesItens = [];
+
+
+  bool _dadosCarregados = false;
+
+  String? nomeDoProdutoParaCompra;
+
+  List<DadosCompra> dadosCompras = [];
+
+  @override
+  void initState() {
+    getDadosCompra();
+    super.initState();
+    loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +116,7 @@ class InProdutos extends StatelessWidget {
                 margin: EdgeInsets.only(left: 5, right: 5),
                 padding: EdgeInsets.all(5.0),
                 child: Text(
-                  "Nome: $nome",
+                  "Nome: ${widget.nome}",
                   style: TextStyle(fontSize: 10.0),
                 ),
               ),
@@ -108,7 +134,7 @@ class InProdutos extends StatelessWidget {
                 padding: EdgeInsets.all(5.0),
                 margin: EdgeInsets.only(left: 5, right: 5),
                 child: Text(
-                  "Quantidade: $quantidade",
+                  "Quantidade: ${widget.quantidade}",
                   style: TextStyle(fontSize: 10.0),
                 ),
               ),
@@ -138,7 +164,7 @@ class InProdutos extends StatelessWidget {
                 margin: EdgeInsets.only(left: 5, right: 5),
                 padding: EdgeInsets.all(5.0),
                 child: Text(
-                  "Categoria: $categoria",
+                  "Categoria: ${widget.categoria}",
                   style: TextStyle(fontSize: 10.0),
                 ),
               ),
@@ -151,4 +177,68 @@ class InProdutos extends StatelessWidget {
       ],
     );
   }
+
+void calcularImpactoProduto(String nomeProduto) async {
+  Usuario u = await buscarDadosUsuario();
+  int custoProduto = 0;
+
+  switch (nomeProduto) {
+    case 'Serviços':
+      custoProduto = 100;
+      break;
+    case 'Emergencia':
+      custoProduto = 150;
+      break;
+    case 'Especiais':
+      custoProduto = 200;
+      break;
+    case 'Duraveis':
+      custoProduto = 300;
+      break;
+    default:
+      break;
+  }
+
+  if (custoProduto > 0 && u.saldo! >= custoProduto) {
+    u.saldo = u.saldo! - custoProduto;
+    print("Produto $nomeProduto foi comprado por $custoProduto coins. ${u.saldo}");
+    // aplicar o impacto do anúncio
+  } else {
+    print("Saldo insuficiente para comprar o produto $custoProduto.");
+  }
+}
+
+  //Metodo GET de servico de dadosCompra
+Future<DadosCompra> getDadosCompra() async {
+  Usuario u = await buscarDadosUsuario();
+  print(u.uuid);
+  String url =
+    "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/dadosCompra/${u.uuid}/";
+  
+  final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final dadosCompra = DadosCompra.fromJson(json);
+    return dadosCompra;
+  } else {
+    throw Exception('Failed to load dados compra');
+  }
+}
+
+  Future<void> loadData() async {
+  try {
+    DadosCompra dadosCompra = await getDadosCompra();
+    if (dadosCompra != null) {
+      setState(() {
+        _listNomesItens.add(ObjetoGenerico(nome: 'Serviços', preco: 150, ativo: dadosCompra.produtoServicos! > 10  ? false : true));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Emergência', preco: 150, ativo: dadosCompra.produtoEmergencia! > 10  ? false : true));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Especiais', preco: 150, ativo: dadosCompra.produtoEspeciais! > 10  ? false : true));
+        _listNomesItens.add(ObjetoGenerico(nome: 'Duraveis', preco: 150, ativo: dadosCompra.produtoDuraveis! > 10  ? false : true));
+        _dadosCarregados = true;
+      });
+    }
+  } catch (error) {
+    print('erro ao add objt na lista de canais ');
+  }
+}
 }

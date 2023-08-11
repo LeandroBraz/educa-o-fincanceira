@@ -1,4 +1,4 @@
-#Mon Aug 07 22:46:42 BRT 2023
+#Thu Aug 10 15:18:47 BRT 2023
 base.0=D\:\\Freela\\educa-o-fincanceira\\educacao-financeira-TCC\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
