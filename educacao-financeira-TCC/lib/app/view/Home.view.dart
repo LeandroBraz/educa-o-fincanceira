@@ -9,6 +9,7 @@ import 'package:app_educacao_financeira/app/view/CanaisPropaganda.view.dart';
 import 'package:app_educacao_financeira/app/view/In.metas.view.dart';
 import 'package:app_educacao_financeira/app/view/In.propagandas.dart';
 import 'package:app_educacao_financeira/app/view/Inventario.view.dart';
+import 'package:app_educacao_financeira/app/view/Produtos.view.dart';
 import 'package:app_educacao_financeira/app/view/quiz.dart';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:app_educacao_financeira/app/controller/controller.dart';
 
 import '../DAO/Auths.dart';
 import '../DAO/dataBaseInMetas.dart';
+import 'ProdutosList.dart';
 
 class Home extends StatefulWidget {
   final controller = Get.put(Controller());
@@ -84,15 +86,8 @@ class _HomeState extends State<Home> {
 
           break;
         // case 2:
-        //   widget.telaHome = widget.controller.produtoviw;
-        //   widget.inventarioAtual = Inventario(
-        //     inventarioCorrente: InProdutos(
-        //       quantidade:
-        //           Controller.instance.produtoView.quantidadeController.text,
-        //           nome: Controller.instance.produtoView.nomeController.text,
-        //           categoria: Controller.instance.produtoView.categoria,
-        //     ),
-        //   );
+        //   widget.telaHome = widget.controller.prodList;
+        //   widget.inventarioAtual = Inventario(ProdList());
         //   break;
         case 3:
           Navigator.pushReplacement(context,
@@ -170,13 +165,15 @@ class _HomeState extends State<Home> {
                 leading: Image.asset('assets/imagens/prancheta.png'),
                 title: Text("Metas"),
               ),
-              ListTile(
-                onTap: () {
-                  modificarEstado(2);
-                },
-                leading: Image.asset('assets/imagens/icon_produto.png'),
-                title: Text("Produtos"),
-              ),
+              Visibility(
+                  visible: false,
+                  child: ListTile(
+                    onTap: () {
+                      modificarEstado(2);
+                    },
+                    leading: Image.asset('assets/imagens/icon_produto.png'),
+                    title: Text("Produtos"),
+                  )),
               Visibility(
                 visible: true,
                 child: ListTile(
@@ -205,8 +202,10 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   modificarEstado(6);
                 },
-                leading: Image.asset('assets/imagens/icon_marketplace.png'),
-                title: Text("Marketplace"),
+                leading: Image.asset('assets/imagens/icon_produto.png'),
+                title: Text("Produtos"),
+                // leading: Image.asset('assets/imagens/icon_marketplace.png'),
+                // title: Text("Marketplace"),
               ),
               ListTile(
                 onTap: () {},

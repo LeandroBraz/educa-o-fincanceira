@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Freela\\educa-o-fincanceira\\educacao-financeira-TCC\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "outputFile": "C:\\educa-o-fincanceira\\educacao-financeira-TCC\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
             "map": [
                 {
-                    "source": "D:\\Freela\\educa-o-fincanceira\\educacao-financeira-TCC\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\educa-o-fincanceira\\educacao-financeira-TCC\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

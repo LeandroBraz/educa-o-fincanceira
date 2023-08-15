@@ -1,3 +1,4 @@
+import 'package:app_educacao_financeira/app/controller/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:app_educacao_financeira/app/view/ModuloSelecao.dart';
@@ -13,7 +14,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-Future<Usuario> loginUsuario(senha, nome) async {
+Future<Usuario?> loginUsuario(senha, nome) async {
   var baseUrl =
       "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/usuariosAtivos";
 
@@ -37,8 +38,7 @@ Future<Usuario> loginUsuario(senha, nome) async {
 
     return usuario;
   } else {
-    // A requisição falhou
-    throw Exception('Erro: ${response.statusCode}');
+    return null;
   }
 }
 
@@ -207,16 +207,18 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   onPressed: () async {
-                    // print(_formKey.currentState);
                     if (_formKey.currentState!.validate()) {
                       user = await loginUsuario(
-                          senha.text.toString(), nome.text.toString());
-                      if (true) {
+                        senha.text.toString(),
+                        nome.text.toString(),
+                      );
+                      if (user != null) {
                         print(user);
                         Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ModuloSelecao(user)));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModuloSelecao(user)),
+                        );
                       } else {
                         _exibirMensagemDeErro(context);
                       }

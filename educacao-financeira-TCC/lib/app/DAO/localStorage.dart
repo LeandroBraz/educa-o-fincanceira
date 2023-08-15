@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/Usuario.model.dart';
 
@@ -20,9 +21,11 @@ Future<void> atualizarDadosUsuario(int novoSaldo) async {
   String? userJson = prefs.getString('user');
 
   if (userJson != null) {
-    Usuario usuario = Usuario.fromJson(json.decode(userJson));
+    Map<String, dynamic> userMap = json.decode(userJson);
+    Usuario usuario = Usuario.fromJson(userMap);
     usuario.saldo = novoSaldo;
-    String novoUserJson = json.encode(usuario);
+
+    String novoUserJson = json.encode(usuario.toJson());
     await prefs.setString('user', novoUserJson);
   } else {
     throw Exception("Usuário não encontrado no local storage.");

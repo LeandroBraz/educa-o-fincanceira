@@ -4,13 +4,19 @@ class ObjetoGenerico {
   String? nome;
   int? preco;
   bool? ativo;
+  int? qtd;
 
-  ObjetoGenerico({ required this.nome, required this.preco, required this.ativo});
+  ObjetoGenerico(
+      {required this.nome,
+      required this.preco,
+      required this.ativo,
+      required this.qtd});
 
   ObjetoGenerico.fromJson(Map<String, dynamic> json) {
     nome = json['nome'];
     preco = json['preco'];
     ativo = json['ativo'];
+    qtd = json['qtd'];
   }
 
   Map<String, dynamic> toMap() {
@@ -18,6 +24,7 @@ class ObjetoGenerico {
     data['nome'] = this.nome;
     data['preco'] = this.preco;
     data['ativo'] = this.ativo;
+    data['qtd'] = this.qtd;
     return data;
   }
 }

@@ -37,4 +37,16 @@ class Usuario {
     data['uuid'] = this.uuid;
     return data;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'senha': senha,
+      'nome': nome,
+      'saldo': saldo,
+      'sexo': sexo,
+      'data_nasc': dataNasc,
+      'uuid': uuid,
+    };
+  }
 }

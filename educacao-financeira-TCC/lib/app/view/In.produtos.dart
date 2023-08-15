@@ -13,16 +13,14 @@ class InProdutos extends StatefulWidget {
   String? quantidade;
   String? nome;
   String? categoria;
-  InProdutos(
-      { this.nome, this.quantidade,  this.categoria});
+  InProdutos({this.nome, this.quantidade, this.categoria});
 
   @override
   State<InProdutos> createState() => _InProdutosState();
 }
 
 class _InProdutosState extends State<InProdutos> {
-   List<ObjetoGenerico> _listNomesItens = [];
-
+  List<ObjetoGenerico> _listNomesItens = [];
 
   bool _dadosCarregados = false;
 
@@ -178,67 +176,84 @@ class _InProdutosState extends State<InProdutos> {
     );
   }
 
-void calcularImpactoProduto(String nomeProduto) async {
-  Usuario u = await buscarDadosUsuario();
-  int custoProduto = 0;
+  void calcularImpactoProduto(String nomeProduto, int count) async {
+    Usuario u = await buscarDadosUsuario();
+    int custoProduto = 0;
 
-  switch (nomeProduto) {
-    case 'Serviços':
-      custoProduto = 100;
-      break;
-    case 'Emergencia':
-      custoProduto = 150;
-      break;
-    case 'Especiais':
-      custoProduto = 200;
-      break;
-    case 'Duraveis':
-      custoProduto = 300;
-      break;
-    default:
-      break;
-  }
+    switch (nomeProduto) {
+      case 'Serviços':
+        count > 10 ? custoProduto = 100 : custoProduto = 150;
+        break;
+      case 'Emergencia':
+        custoProduto = 150;
+        break;
+      case 'Especiais':
+        custoProduto = 200;
+        break;
+      case 'Duraveis':
+        custoProduto = 300;
+        break;
+      default:
+        break;
+    }
 
-  if (custoProduto > 0 && u.saldo! >= custoProduto) {
-    u.saldo = u.saldo! - custoProduto;
-    print("Produto $nomeProduto foi comprado por $custoProduto coins. ${u.saldo}");
-    // aplicar o impacto do anúncio
-  } else {
-    print("Saldo insuficiente para comprar o produto $custoProduto.");
+    if (custoProduto > 0 && u.saldo! >= custoProduto) {
+      u.saldo = u.saldo! - custoProduto;
+      print(
+          "Produto $nomeProduto foi comprado por $custoProduto coins. ${u.saldo}");
+      // aplicar o impacto do anúncio
+    } else {
+      print("Saldo insuficiente para comprar o produto $custoProduto.");
+    }
   }
-}
 
   //Metodo GET de servico de dadosCompra
-Future<DadosCompra> getDadosCompra() async {
-  Usuario u = await buscarDadosUsuario();
-  print(u.uuid);
-  String url =
-    "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/dadosCompra/${u.uuid}/";
-  
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final dadosCompra = DadosCompra.fromJson(json);
-    return dadosCompra;
-  } else {
-    throw Exception('Failed to load dados compra');
+  Future<DadosCompra> getDadosCompra() async {
+    Usuario u = await buscarDadosUsuario();
+    print(u.uuid);
+    String url =
+        "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/dadosCompra/${u.uuid}/";
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      final dadosCompra = DadosCompra.fromJson(json);
+      return dadosCompra;
+    } else {
+      throw Exception('Failed to load dados compra');
+    }
   }
-}
 
   Future<void> loadData() async {
-  try {
-    DadosCompra dadosCompra = await getDadosCompra();
-    if (dadosCompra != null) {
-      setState(() {
-        _listNomesItens.add(ObjetoGenerico(nome: 'Serviços', preco: 150, ativo: dadosCompra.produtoServicos! > 10  ? false : true));
-        _listNomesItens.add(ObjetoGenerico(nome: 'Emergência', preco: 150, ativo: dadosCompra.produtoEmergencia! > 10  ? false : true));
-        _listNomesItens.add(ObjetoGenerico(nome: 'Especiais', preco: 150, ativo: dadosCompra.produtoEspeciais! > 10  ? false : true));
-        _listNomesItens.add(ObjetoGenerico(nome: 'Duraveis', preco: 150, ativo: dadosCompra.produtoDuraveis! > 10  ? false : true));
-        _dadosCarregados = true;
-      });
+    try {
+      DadosCompra dadosCompra = await getDadosCompra();
+      if (dadosCompra != null) {
+        setState(() {
+          _listNomesItens.add(ObjetoGenerico(
+              nome: 'Serviços',
+              preco: 150,
+              ativo: dadosCompra.produto_servicos! > 10 ? false : true,
+              qtd: 0));
+          _listNomesItens.add(ObjetoGenerico(
+              nome: 'Emergência',
+              preco: 150,
+              ativo: dadosCompra.produto_especiais! > 10 ? false : true,
+              qtd: 0));
+          _listNomesItens.add(ObjetoGenerico(
+              nome: 'Especiais',
+              preco: 150,
+              ativo: dadosCompra.produto_especiais! > 10 ? false : true,
+              qtd: 0));
+          _listNomesItens.add(ObjetoGenerico(
+              nome: 'Duraveis',
+              preco: 150,
+              ativo: dadosCompra.produto_duraveis! > 10 ? false : true,
+              qtd: 0));
+          _dadosCarregados = true;
+        });
+      }
+    } catch (error) {
+      print('erro ao add objt na lista de canais ');
     }
-  } catch (error) {
-    print('erro ao add objt na lista de canais ');
   }
-}
 }
