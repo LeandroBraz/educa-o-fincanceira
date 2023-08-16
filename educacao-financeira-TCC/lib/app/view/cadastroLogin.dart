@@ -74,10 +74,11 @@ class _CadastroState extends State<Cadastro> {
             content: Text("Senhas diferentes"),
             actions: [
               TextButton(
-                  child: Text("ok"),
-                  onPressed: () {
-                    print("senha");
-                  }),
+                child: Text("ok"),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
             ],
           );
         },
@@ -98,6 +99,7 @@ class _CadastroState extends State<Cadastro> {
       "sexo": sexoValue,
       "data_nasc": dataNascimento.text.toString(),
       "uuid": myUuid,
+      "fase": "fase1"
     };
 
     try {
@@ -110,7 +112,7 @@ class _CadastroState extends State<Cadastro> {
       );
 
       if (response.statusCode == 200) {
-        _exibemensagemDeCadastro(context);
+        cadastrarDadosCompra(context, myUuid);
       } else {
         throw Exception("Falha ao adicionar usuário: ${response.statusCode}");
       }
@@ -124,6 +126,64 @@ class _CadastroState extends State<Cadastro> {
             title: Text("Error"),
             content: Text(
                 "Cadastro não Realizado, ocorreu um problema com os dados"),
+            actions: [
+              TextButton(
+                child: Text("ok"),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void cadastrarDadosCompra(context, uuidUser) async {
+    String apiUrl =
+        "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/dadosCompra";
+    Uuid uuid = Uuid();
+    String myUuid = uuid.v4();
+
+    Map<String, dynamic> dadosCompraData = {
+      "canal_youtube": false,
+      "canal_twitter": false,
+      "canal_instagram": false,
+      "canal_facebook": false,
+      "produto_servicos": 0,
+      "produto_emergencia": 0,
+      "produto_duraveis": 0,
+      "produto_especiais": 0,
+      "uuid": myUuid,
+      "uuid_usuario": uuidUser,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(dadosCompraData),
+      );
+
+      if (response.statusCode == 200) {
+        _exibemensagemDeCadastro(context);
+      } else {
+        throw Exception(
+            "Falha ao adicionar dadosCompra: ${response.statusCode}");
+      }
+    } catch (e) {
+      print('Erro: $e');
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(
+                "Cadastro não Realizado, ocorreu um problema com os dados de compra"),
             actions: [
               TextButton(
                 child: Text("ok"),
@@ -293,6 +353,23 @@ class _CadastroState extends State<Cadastro> {
                       }
                     },
                   ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 40,
+                child: TextButton(
+                  child: Text(
+                    "Login",
+                    style: TextStyle(color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () => {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()))
+                  },
                 ),
               ),
             ],

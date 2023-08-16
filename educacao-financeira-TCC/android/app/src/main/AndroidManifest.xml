@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.ufrpe.tcc.app_educacao_financeira">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="budgetBoss"
         android:name="${applicationName}"

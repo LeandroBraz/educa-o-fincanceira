@@ -60,6 +60,9 @@ class _ResultadoState extends State<Resultado> {
                     print(widget.user.uuid);
                     print(widget.acertos * 100);
                     upadateValor(widget.user.uuid, (widget.acertos * 100));
+                    if (widget.acertos >= 5) {
+                      updateFase(widget.user.uuid, 'fase2');
+                    }
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

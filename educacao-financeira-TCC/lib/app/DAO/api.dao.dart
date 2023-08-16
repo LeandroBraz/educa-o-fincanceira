@@ -62,3 +62,21 @@ Future<DadosCompra> getDadosCompra() async {
     throw Exception('Failed to load dados compra');
   }
 }
+
+Future<bool> updateFase(uuid, fase) async {
+  var baseUrl =
+      "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/atualizarFase";
+
+  // Montando a URL com os parâmetros senha e nome
+  var url = Uri.parse('$baseUrl/$uuid/$fase');
+  var response = await http.patch(url);
+
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    print('Erro: ${response.statusCode}');
+    return false;
+    // A requisição falhou
+
+  }
+}

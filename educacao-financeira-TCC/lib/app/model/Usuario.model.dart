@@ -6,6 +6,7 @@ class Usuario {
   String? sexo;
   String? dataNasc;
   String? uuid;
+  String? fase;
 
   Usuario(
       {this.id,
@@ -14,7 +15,8 @@ class Usuario {
       this.saldo,
       this.sexo,
       this.dataNasc,
-      this.uuid});
+      this.uuid,
+      this.fase});
 
   Usuario.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +26,7 @@ class Usuario {
     sexo = json['sexo'];
     dataNasc = json['data_nasc'];
     uuid = json['uuid'];
+    fase = json['fase'];
   }
 
   Map<String, dynamic> toMap() {
@@ -35,6 +38,7 @@ class Usuario {
     data['sexo'] = this.sexo;
     data['data_nasc'] = this.dataNasc;
     data['uuid'] = this.uuid;
+    data['fase'] = this.fase;
     return data;
   }
 
@@ -47,6 +51,7 @@ class Usuario {
       'sexo': sexo,
       'data_nasc': dataNasc,
       'uuid': uuid,
+      'fase': fase,
     };
   }
 }
