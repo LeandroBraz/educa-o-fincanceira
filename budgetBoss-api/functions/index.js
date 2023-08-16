@@ -93,7 +93,8 @@ app.post("/usuariosAtivos", function (request, response) {
     saldo: request.body.saldo,
     sexo: request.body.sexo,
     data_nasc: request.body.data_nasc,
-    uuid: request.body.uuid
+    uuid: request.body.uuid, 
+    fase: request.body.fase
   };
 
   dbUserAtivos.add(userToAdd)
@@ -141,6 +142,45 @@ app.patch("/atualizarSaldo/:uuid/:saldo", function (request, response) {
             response.status(500)
               .json(
                 { error: "Falha ao atualizar saldo do usuário" });
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user: ", error);
+      response.status(500).json({ error: "Falha ao consultar usuário" });
+    });
+});
+
+app.patch("/atualizarFase/:uuid/:fase", function (request, response) {
+  const uuid = request.params.uuid;
+  const fase = (request.params.fase);
+
+  if (!uuid) {
+    response.status(400).json({ error: "UUID não fornecido" });
+    return;
+  }
+
+  const userRef = admin.firestore()
+    .collection("usuariosAtivos")
+    .where("uuid", "==", uuid);
+
+  userRef
+    .get()
+    .then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        response.status(404).json({ error: "Usuário não encontrado" });
+      } else {
+        const userDoc = querySnapshot.docs[0];
+        userDoc.ref
+          .update({ fase: fase })
+          .then(() => {
+            response.json({ message: "Fase atualizada com sucesso" });
+          })
+          .catch((error) => {
+            console.error("Error updating fase: ", error);
+            response.status(500)
+              .json(
+                { error: "Falha ao atualizar fase do usuário" });
           });
       }
     })
