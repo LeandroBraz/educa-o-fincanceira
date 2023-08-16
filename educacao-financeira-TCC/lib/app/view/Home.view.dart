@@ -9,6 +9,7 @@ import 'package:app_educacao_financeira/app/view/CanaisPropaganda.view.dart';
 import 'package:app_educacao_financeira/app/view/In.metas.view.dart';
 import 'package:app_educacao_financeira/app/view/In.propagandas.dart';
 import 'package:app_educacao_financeira/app/view/Inventario.view.dart';
+import 'package:app_educacao_financeira/app/view/Produtos.view.dart';
 import 'package:app_educacao_financeira/app/view/quiz.dart';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:app_educacao_financeira/app/controller/controller.dart';
 
 import '../DAO/Auths.dart';
 import '../DAO/dataBaseInMetas.dart';
+import 'ProdutosList.dart';
 
 class Home extends StatefulWidget {
   final controller = Get.put(Controller());
@@ -37,10 +39,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final MainDrawer mainDrawer = MainDrawer();
-  bool mostrarQuiz = true;
-  bool mostrarFase1 = false;
-  bool mostrarFase2 = false;
-  bool mostrarFase3 = false;
 
   // buscarInformacao() async {
   //   var usuario =
@@ -84,15 +82,8 @@ class _HomeState extends State<Home> {
 
           break;
         // case 2:
-        //   widget.telaHome = widget.controller.produtoviw;
-        //   widget.inventarioAtual = Inventario(
-        //     inventarioCorrente: InProdutos(
-        //       quantidade:
-        //           Controller.instance.produtoView.quantidadeController.text,
-        //           nome: Controller.instance.produtoView.nomeController.text,
-        //           categoria: Controller.instance.produtoView.categoria,
-        //     ),
-        //   );
+        //   widget.telaHome = widget.controller.prodList;
+        //   widget.inventarioAtual = Inventario(ProdList());
         //   break;
         case 3:
           Navigator.pushReplacement(context,
@@ -164,21 +155,29 @@ class _HomeState extends State<Home> {
           child: Column(
             children: [
               ListTile(
+                contentPadding: EdgeInsets.only(
+                    left: 16, right: 16, top: 40), // Margem superior
                 onTap: () {
                   modificarEstado(1);
                 },
                 leading: Image.asset('assets/imagens/prancheta.png'),
                 title: Text("Metas"),
               ),
-              ListTile(
-                onTap: () {
-                  modificarEstado(2);
-                },
-                leading: Image.asset('assets/imagens/icon_produto.png'),
-                title: Text("Produtos"),
-              ),
+              SizedBox(height: 8),
               Visibility(
-                visible: true,
+                  visible:
+                      widget.user.fase.toString() != 'fase1' ? true : false,
+                  child: ListTile(
+                    onTap: () {
+                      print(widget.user.fase.toString());
+                      modificarEstado(6);
+                    },
+                    leading: Image.asset('assets/imagens/icon_produto.png'),
+                    title: Text("Produtos"),
+                  )),
+              SizedBox(height: 8),
+              Visibility(
+                visible: widget.user.fase.toString() == 'fase1' ? true : false,
                 child: ListTile(
                   onTap: () {
                     modificarEstado(3);
@@ -187,34 +186,27 @@ class _HomeState extends State<Home> {
                   title: Text("Quiz"),
                 ),
               ),
-              ListTile(
-                onTap: () {
-                  modificarEstado(4);
-                },
-                leading: Image.asset('assets/imagens/icon_propaganda.png'),
-                title: Text("Canais de Propaganda"),
+              SizedBox(height: 8),
+              Visibility(
+                visible: widget.user.fase.toString() != 'fase1' ? true : false,
+                child: ListTile(
+                  onTap: () {
+                    modificarEstado(4);
+                  },
+                  leading: Image.asset('assets/imagens/icon_propaganda.png'),
+                  title: Text("Canais de Propaganda"),
+                ),
               ),
-              ListTile(
-                onTap: () {
-                  modificarEstado(5);
-                },
-                leading: Image.asset('assets/imagens/financiamento.png'),
-                title: Text("Finanças"),
-              ),
-              ListTile(
-                onTap: () {
-                  modificarEstado(6);
-                },
-                leading: Image.asset('assets/imagens/icon_marketplace.png'),
-                title: Text("Marketplace"),
-              ),
+              SizedBox(height: 8),
               ListTile(
                 onTap: () {},
                 leading: Image.asset('assets/imagens/icon_engrenagem.png'),
                 title: Text("Opções"),
               ),
+              SizedBox(height: 8),
               ListTile(
                 onTap: () {
+                  print(widget.user.fase.toString());
                   modificarEstado(8);
                 },
                 leading: Image.asset('assets/imagens/icon_sair.png'),

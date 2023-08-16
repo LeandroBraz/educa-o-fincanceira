@@ -146,7 +146,7 @@ class _QuizState extends State<Quiz> {
                 style: TextStyle(fontSize: 20),
               ),
               SizedBox(
-                width: 250,
+                width: 350,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -163,7 +163,7 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               SizedBox(
-                width: 250,
+                width: 350,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -180,7 +180,7 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               SizedBox(
-                width: 250,
+                width: 350,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -197,7 +197,7 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               SizedBox(
-                width: 250,
+                width: 350,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:

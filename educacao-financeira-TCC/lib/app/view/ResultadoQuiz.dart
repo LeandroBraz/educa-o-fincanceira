@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:app_educacao_financeira/app/DAO/SCRIPT_IN_METAS_BASE.dart';
 import 'package:http/http.dart' as http;
+import '../DAO/api.dao.dart';
 import '../model/Usuario.model.dart';
 import 'In.metas.view.dart';
 import 'Inventario.view.dart';
@@ -17,24 +18,6 @@ class Resultado extends StatefulWidget {
 
   @override
   State<Resultado> createState() => _ResultadoState();
-}
-
-Future<bool> UpadateValor(uuid, saldo) async {
-  var baseUrl =
-      "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/atualizarSaldo";
-
-  // Montando a URL com os parâmetros senha e nome
-  var url = Uri.parse('$baseUrl/$uuid/$saldo');
-  var response = await http.patch(url);
-
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    print('Erro: ${response.statusCode}');
-    return false;
-    // A requisição falhou
-
-  }
 }
 
 class _ResultadoState extends State<Resultado> {
@@ -76,7 +59,10 @@ class _ResultadoState extends State<Resultado> {
                   onPressed: () {
                     print(widget.user.uuid);
                     print(widget.acertos * 100);
-                    UpadateValor(widget.user.uuid, (widget.acertos * 100));
+                    upadateValor(widget.user.uuid, (widget.acertos * 100));
+                    if (widget.acertos >= 5) {
+                      updateFase(widget.user.uuid, 'fase2');
+                    }
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
