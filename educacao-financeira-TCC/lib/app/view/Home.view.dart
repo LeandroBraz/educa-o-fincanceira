@@ -21,6 +21,7 @@ import 'package:app_educacao_financeira/app/controller/controller.dart';
 
 import '../DAO/Auths.dart';
 import '../DAO/dataBaseInMetas.dart';
+import '../DAO/localStorage.dart';
 import 'ProdutosList.dart';
 
 class Home extends StatefulWidget {
@@ -123,8 +124,22 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    buscarUsarioLocal();
+  }
+
+  void buscarUsarioLocal() async {
+    Usuario u = await buscarDadosUsuario();
+
+    setState(() {
+      widget.user = u;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // // SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setEnabledSystemUIOverlays([]);
     // SystemChrome.setEnabledSystemUIMode([[{}]]);
     return Scaffold(
       appBar: AppBar(

@@ -36,520 +36,181 @@ class _InfoPagesState extends State<InfoPages> {
 
     return Scaffold(
       body: SafeArea(
-          child: Column(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView(
+                onPageChanged: (num) {
+                  changePage(num);
+                },
+                children: [
+                  _buildPage(
+                    size,
+                    Colors.purple[50]!,
+                    'assets/imagens/icon_produto.png',
+                    'Produto',
+                    'Você aprenderá a ser empreendedor administrando a saúde financeira da sua empresa. Como fonte de receita terá que vender produtos. Os produtos podem ter várias características que serão livres para serem definidas por você. Cada característica implica em um desempenho diferente de vendas. Esse desempenho influenciará se as metas do jogo serão atingidas. Provando assim se você se tornou ou não um bom empreendedor.',
+                  ),
+                  _buildPage(
+                    size,
+                    Colors.purple[50]!,
+                    'assets/imagens/icon_info_propaganda.png',
+                    'Canais de Propaganda',
+                    'Para que seus produtos alcancem os clientes, será necessário utilizar um canal para que seja feita a propaganda dos produtos. Cada canal terá resultados diferentes em cada tipo de produto criado.',
+                  ),
+                  _buildPage(
+                    size,
+                    Colors.purple[50]!,
+                    'assets/imagens/icon_empreendedor.png',
+                    'Marketplace',
+                    'Com o intuito de potencializar as vendas, você poderá utilizar anúncios em Marketplaces diferentes. No qual, terá resultados diferentes em produtos diferentes.',
+                  ),
+                  _buildPage(
+                    size,
+                    Colors.purple[50]!,
+                    'assets/imagens/icon_info_financas.png',
+                    'Finanças',
+                    'Você aprenderá a ser empreendedor administrando a saúde financeira da sua empresa. Como fonte de receita terá que vender produtos. Os produtos podem ter várias características que serão livres para serem definidas por você. Cada característica implica em um desempenho diferente de vendas. Esse desempenho influenciará se as metas do jogo serão atingidas. Provando assim se você se tornou ou não um bom empreendedor.',
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: Colors.green[800],
+              height: size.height * 0.10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (int i = 0; i < 4; i++)
+                    Container(
+                      width: 10,
+                      height: 10,
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: idPage == i
+                            ? Colors.purple[300]
+                            : Colors.purple[50],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPage(
+    Size size,
+    Color bgColor,
+    String imagePath,
+    String title,
+    String description,
+  ) {
+    return Container(
+      color: bgColor,
+      child: Row(
         children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: size.width * 0.30,
+                height: 150,
+                child: GestureDetector(
+                  child: Image.asset(imagePath),
+                  onTap: () {},
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                color: Colors.green[400],
+                width: size.width * 0.50,
+                height: size.height * 0.70,
+                margin: EdgeInsets.only(top: 15),
+                child: Card(
+                  color: Colors.white54,
+                  elevation: 50.0,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(40),
+                            child: Text(
+                              title,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: Text(
+                                description,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
           Expanded(
-            child: PageView(
-              onPageChanged: (num) {
-                changePage(num);
-              },
-              children: [
-                Container(
-                  color: Colors.purple[50],
-                  child: Column(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: size.width * 0.30,
-                                  height: 100,
-                                  child: GestureDetector(
-                                    child: Image.asset(
-                                        'assets/imagens/icon_produto.png'),
-                                    onTap: () {},
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Home(
+                                  Inventario(
+                                    InMetas(),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    color: Colors.green[400],
-                                    width: size.width * 0.50,
-                                    height: size.height * 0.70,
-                                    margin: EdgeInsets.only(top: 15),
-                                    child: Card(
-                                      color: Colors.white54,
-                                      elevation: 50.0,
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.all(40),
-                                                child: Text("Produto",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              )
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                  child: Container(
-                                                margin: EdgeInsets.all(10),
-                                                child: Text(
-                                                  " Você aprenderá a ser empreendedor administrando a saúde financeira da sua empresa. Como fonte de receita terá que vender produtos. Os produtos podem ter várias características que serão livres para serem definidas por você. Cada característica implica em um desempenho diferente de vendas. Esse desempenho influenciará se as metas do jogo serão atingidas. Provando assim se você se tornou ou não um bom empreendedor.",
-                                                  style:
-                                                      TextStyle(fontSize: 12),
-                                                ),
-                                              ))
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.all(5),
-                                          child: TextButton(
-                                              // shape: RoundedRectangleBorder(
-                                              //     borderRadius:
-                                              //         BorderRadius.circular(
-                                              //             20.0)),
-                                              // color: Colors.grey[400],
-                                              onPressed: () {
-                                                print(widget.user.nome);
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Home(
-                                                              Inventario(
-                                                                InMetas(),
-                                                              ),
-                                                              MetasView(),
-                                                              widget.user,
-                                                            )));
-                                              },
-                                              child: Text(
-                                                "Pular",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15),
-                                              )),
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                  MetasView(),
+                                  widget.user,
                                 ),
                               ),
+                            );
+                          },
+                          child: Text(
+                            "Pular",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  color: Colors.purple[50],
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: size.width * 0.30,
-                                  height: 150,
-                                  child: GestureDetector(
-                                    child: Image.asset(
-                                        'assets/imagens/icon_info_propaganda.png'),
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  color: Colors.green[400],
-                                  width: size.width * 0.50,
-                                  height: size.height * 0.70,
-                                  margin: EdgeInsets.only(top: 15),
-                                  child: Card(
-                                    color: Colors.white54,
-                                    elevation: 50.0,
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.all(40),
-                                              child: Text(
-                                                  "Canais de Propaganda",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                child: Container(
-                                              margin: EdgeInsets.all(10),
-                                              child: Text(
-                                                " Para que seus produtos alcancem os clientes, será necessário utilizar um canal para que seja feita a propaganda dos produtos. Cada canal terá resultados diferentes em cada tipo de produto criado.",
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                            ))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.all(5),
-                                          child: TextButton(
-                                              // shape: RoundedRectangleBorder(
-                                              //     borderRadius:
-                                              //         BorderRadius.circular(
-                                              //             20.0)),
-                                              // color: Colors.grey[400],
-                                              onPressed: () {
-                                                print(widget.user.nome);
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Home(
-                                                              Inventario(
-                                                                InMetas(),
-                                                              ),
-                                                              MetasView(),
-                                                              widget.user,
-                                                            )));
-                                              },
-                                              child: Text(
-                                                "Pular",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15),
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.purple[50],
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: size.width * 0.30,
-                                  height: 200,
-                                  child: GestureDetector(
-                                    child: Image.asset(
-                                        'assets/imagens/icon_empreendedor.png'),
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  color: Colors.green[400],
-                                  width: size.width * 0.50,
-                                  height: size.height * 0.70,
-                                  margin: EdgeInsets.only(top: 15),
-                                  child: Card(
-                                    color: Colors.white54,
-                                    elevation: 50.0,
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.all(40),
-                                              child: Text("Marketplace",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                child: Container(
-                                              margin: EdgeInsets.all(10),
-                                              child: Text(
-                                                " Com o intuito de potencializar as vendas, você poderá utilizar anúncios em Marketplaces diferentes. No qual, terá resultados diferentes em produtos diferentes.",
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                            ))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: TextButton(
-                                              // shape: RoundedRectangleBorder(
-                                              //     borderRadius:
-                                              //         BorderRadius.circular(
-                                              //             20.0)),
-                                              // color: Colors.grey[400],
-                                              onPressed: () {
-                                                print(widget.user.nome);
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Home(
-                                                              Inventario(
-                                                                InMetas(),
-                                                              ),
-                                                              MetasView(),
-                                                              widget.user,
-                                                            )));
-                                              },
-                                              child: Text(
-                                                "Pular",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15),
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.purple[50],
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: size.width * 0.30,
-                                  height: 150,
-                                  child: GestureDetector(
-                                    child: Image.asset(
-                                        'assets/imagens/icon_info_financas.png'),
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  color: Colors.green[400],
-                                  width: size.width * 0.50,
-                                  height: size.height * 0.70,
-                                  margin: EdgeInsets.only(top: 15),
-                                  child: Card(
-                                    color: Colors.white54,
-                                    elevation: 50.0,
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.all(40),
-                                              child: Text("Finanças",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            )
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                                child: Container(
-                                              margin: EdgeInsets.all(10),
-                                              child: Text(
-                                                "Você aprenderá a ser empreendedor administrando a saúde financeira da sua empresa. Como fonte de receita terá que vender produtos. Os produtos podem ter várias características que serão livres para serem definidas por você. Cada característica implica em um desempenho diferente de vendas. Esse desempenho influenciará se as metas do jogo serão atingidas. Provando assim se você se tornou ou não um bom empreendedor.",
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                            ))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: TextButton(
-                                              // shape: RoundedRectangleBorder(
-                                              //     borderRadius:
-                                              //         BorderRadius.circular(
-                                              //             20.0)),
-                                              // color: Colors.grey[400],
-                                              onPressed: () {
-                                                print(widget.user.nome);
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Home(
-                                                              Inventario(
-                                                                InMetas(),
-                                                              ),
-                                                              MetasView(),
-                                                              widget.user,
-                                                            )));
-                                              },
-                                              child: Text(
-                                                "Iniciar",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15),
-                                              )),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          Container(
-            color: Colors.green[800],
-            height: size.height * 0.10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color:
-                          idPage == 0 ? Colors.purple[300] : Colors.purple[50]),
-                ),
-                Container(
-                  width: 10,
-                  height: 10,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color:
-                          idPage == 1 ? Colors.purple[300] : Colors.purple[50]),
-                ),
-                Container(
-                  width: 10,
-                  height: 10,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color:
-                          idPage == 2 ? Colors.purple[300] : Colors.purple[50]),
-                ),
-                Container(
-                  width: 10,
-                  height: 10,
-                  margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color:
-                          idPage == 3 ? Colors.purple[300] : Colors.purple[50]),
-                ),
-              ],
-            ),
-          )
         ],
-      )),
+      ),
     );
   }
 }

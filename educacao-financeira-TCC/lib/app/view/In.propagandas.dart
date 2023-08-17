@@ -48,10 +48,8 @@ class InPropagandas extends StatelessWidget {
                             print(usuario);
                             return Text(usuario!.saldo.toString());
                           } else if (futuro.hasError) {
-                            // Lidar com o erro, por exemplo, exibindo uma mensagem de erro na interface
                             return Text("Erro ao carregar dados do usuário.");
                           } else {
-                            // Caso ainda esteja carregando os dados do usuário, pode exibir um indicador de progresso, por exemplo:
                             return CircularProgressIndicator();
                           }
                         },

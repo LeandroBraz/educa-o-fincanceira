@@ -475,7 +475,7 @@ class _CanaisPropagState extends State<CanaisPropag> {
         });
       }
     } catch (error) {
-      print('erro ao add objt na lista de canais ');
+      print('erro ao add objt na lista dePSSSSSSSSSSSSSSACAXCASDASD ');
     }
   }
 }

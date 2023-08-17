@@ -19,27 +19,19 @@ class InMetas extends StatefulWidget {
 class _InMetasState extends State<InMetas> {
   final auths = Auths();
 
-  // Future<List<Map<String,dynamic>>> _buscar() async {
-  //    // await deleteDatabase(
-  //    //     join(await getDatabasesPath(), "projeto_TCC_db")
-  //    // );
-  //
-  //   String path =  join( await getDatabasesPath(), "projeto_TCC_db");
-  //   Database db = await openDatabase(
-  //     path,
-  //   version: 1,
-  //     onCreate: (db, v){
-  //       db.execute(createTable);
-  //       db.execute(insert1);
-  //     }
-  //   );
-  //   var retorno = db.query("HOME", where: 'UUID = ?', whereArgs: ["0484fbb0-afcc-11ed-afa1-0242ac120002"]);
-  //  print("buscado dados no banco");
-  //  print(retorno);
-  //   return retorno;
-  //
-  //
-  // }
+  @override
+  void initState() {
+    super.initState();
+    buscarUsarioLocal();
+  }
+
+  void buscarUsarioLocal() async {
+    Usuario u = await buscarDadosUsuario();
+
+    setState(() {
+      //widget.user = u;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
