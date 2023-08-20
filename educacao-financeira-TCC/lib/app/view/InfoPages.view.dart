@@ -178,7 +178,7 @@ class _InfoPagesState extends State<InfoPages> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Container(
-                        margin: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(5),
                         child: TextButton(
                           onPressed: () {
                             Navigator.push(

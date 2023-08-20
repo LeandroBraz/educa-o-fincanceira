@@ -6,7 +6,7 @@ class Usuario {
   String? sexo;
   String? dataNasc;
   String? uuid;
-  String? fase;
+  int? fase;
 
   Usuario(
       {this.id,

@@ -84,41 +84,6 @@ class _InMetasState extends State<InMetas> {
         SizedBox(
           height: 30,
         ),
-        //   Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Container(
-        //         width: 40,
-        //         height: 40,
-        //         margin: EdgeInsets.only(left: 10),
-        //         child: GestureDetector(
-        //           child: Image.asset('assets/imagens/icon_companhia.png'),
-        //           onTap: () {
-        //             print("teste");
-        //           },
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        //   SizedBox(
-        //     height: 40,
-        //   ),
-        //   Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Container(
-        //         width: 40,
-        //         height: 40,
-        //         margin: EdgeInsets.only(left: 10),
-        //         child: GestureDetector(
-        //           child: Image.asset('assets/imagens/icon_calendario.png'),
-        //           onTap: () {
-        //             print("teste");
-        //           },
-        //         ),
-        //       ),
-        //     ],
-        //   ),
       ],
     );
   }

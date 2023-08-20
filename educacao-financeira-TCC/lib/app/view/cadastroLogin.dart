@@ -248,7 +248,7 @@ class _CadastroState extends State<Cadastro> {
         "sexo": sexoValue,
         "data_nasc": dataNascimento.text.toString(),
         "uuid": myUuid,
-        "fase": "fase1"
+        "fase": 1
       };
 
       try {

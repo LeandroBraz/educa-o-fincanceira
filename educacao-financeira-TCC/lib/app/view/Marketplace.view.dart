@@ -317,8 +317,10 @@ class _MarketplaceViewState extends State<MarketplaceView> {
                                                                                   ),
                                                                                   ElevatedButton(
                                                                                     onPressed: () {
-                                                                                      validarCompra(nomeDoCanalParaCompra!, _listNomesItens[index].preco!, quantity, context);
-                                                                                      Navigator.pop(context);
+                                                                                      setState(() => {
+                                                                                            validarCompra(nomeDoCanalParaCompra!, _listNomesItens[index].preco!, quantity, context),
+                                                                                            Navigator.pop(context)
+                                                                                          });
                                                                                     },
                                                                                     child: Text("Confirmar Compra"),
                                                                                   ),
@@ -511,8 +513,9 @@ Future<void> atualizacaoDosCampos(
       quantidade,
       campo,
     );
-    await atualizarDadosUsuario(novoSaldo);
-    await upadateValor(user.uuid, novoSaldo);
+    await atualizarDadosUsuario(novoSaldo, fase: 3);
+    await updateValor(user.uuid, novoSaldo);
+    await updateFase(user.uuid, 3);
     print('Saldo atualizado com sucesso!');
   } catch (e) {
     print('Ocorreu um erro: $e');

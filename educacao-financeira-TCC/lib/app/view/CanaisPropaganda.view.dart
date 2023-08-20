@@ -492,7 +492,7 @@ Future<void> atualizacaoDosCampos(int valorSaldo, String nomeCampo) async {
     var campo = converteCampo(nomeCampo);
     await atualizaCompra(user.uuid, true, campo);
     await atualizarDadosUsuario(novoSaldo);
-    await upadateValor(user.uuid, novoSaldo);
+    await updateValor(user.uuid, novoSaldo);
     print('Saldo atualizado com sucesso!');
   } catch (e) {
     print('Ocorreu um erro: $e');
