@@ -1,9 +1,13 @@
 import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:app_educacao_financeira/app/model/dadosCompra.dart';
+import 'package:app_educacao_financeira/app/view/Home.view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../DAO/api.dao.dart';
 import '../model/objetoGenerico.dart';
 import '../DAO/localStorage.dart';
+import '../provider/produtosProvider.dart';
+import 'package:provider/provider.dart';
 
 class MarketplaceView extends StatefulWidget {
   const MarketplaceView({super.key});
@@ -472,7 +476,7 @@ class _MarketplaceViewState extends State<MarketplaceView> {
     int precoPorUnidade = calcularPreco(tipoProduto, quantity);
 
     int valorASerPago = precoPorUnidade * quantity;
-    if (user.saldo! > valorASerPago) {
+    if (user.saldo! >= valorASerPago) {
       await atualizacaoDosCampos(preco, tipoProduto, quantity);
     } else {
       showDialog(

@@ -26,6 +26,8 @@ import '../DAO/dataBaseInMetas.dart';
 import '../DAO/localStorage.dart';
 import 'ProdutosList.dart';
 
+import 'dart:async';
+
 class Home extends StatefulWidget {
   final controller = Get.put(Controller());
 
@@ -42,6 +44,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final MainDrawer mainDrawer = MainDrawer();
+
+  Timer? _userRefreshTimer;
 
   _openPopup(context) {
     Alert(
@@ -120,7 +124,21 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    buscarUsarioLocal();
+    //  buscarUsarioLocal();
+    iniciarAgendamento();
+  }
+
+  void iniciarAgendamento() {
+    const tempoAtualizacao = Duration(seconds: 2);
+    _userRefreshTimer = Timer.periodic(tempoAtualizacao, (timer) {
+      buscarUsarioLocal();
+    });
+  }
+
+  @override
+  void dispose() {
+    _userRefreshTimer?.cancel();
+    super.dispose();
   }
 
   void buscarUsarioLocal() async {

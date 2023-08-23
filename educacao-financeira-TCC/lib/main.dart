@@ -10,6 +10,15 @@ Future<void> main() async {
   await dotenv.load();
 
   runApp(MyApp());
+
+//   void main() {
+//     runApp(
+//       ChangeNotifierProvider(
+//         create: (context) => PurchaseModel(),
+//         child: MyApp(),
+//       ),
+//     );
+//   }
 }
 
 class MyApp extends StatelessWidget {

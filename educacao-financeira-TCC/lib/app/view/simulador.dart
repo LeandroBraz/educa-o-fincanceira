@@ -184,7 +184,9 @@ class _SimuladorState extends State<Simulador> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Simule meses'),
+        leading: Container(),
+        centerTitle: true,
+        title: Text('Pronto pra jogo?'),
         actions: [
           IconButton(
             icon: Icon(Icons.home),
@@ -211,42 +213,42 @@ class _SimuladorState extends State<Simulador> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.all(20),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Text(
-                    'Pronto para o Jogo?',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      shadows: [
-                        Shadow(
-                          color: Colors.white,
-                          offset: Offset(1, 1),
-                          blurRadius: 3,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 50,
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/imagens/icon_youtube.png'),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   padding: EdgeInsets.all(20),
+            //   child: Stack(
+            //     alignment: Alignment.center,
+            //     children: [
+            //       Text(
+            //         'Pronto para o Jogo?',
+            //         style: TextStyle(
+            //           fontSize: 24,
+            //           fontWeight: FontWeight.bold,
+            //           color: Colors.black,
+            //           shadows: [
+            //             Shadow(
+            //               color: Colors.white,
+            //               offset: Offset(1, 1),
+            //               blurRadius: 3,
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //       Positioned(
+            //         top: 50,
+            //         child: Container(
+            //           width: 100,
+            //           height: 100,
+            //           decoration: BoxDecoration(
+            //             image: DecorationImage(
+            //               image: AssetImage('assets/imagens/icon_youtube.png'),
+            //               fit: BoxFit.contain,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             SizedBox(height: 20), // Espaço entre o título e a listagem
             Expanded(
               flex: 3,
@@ -254,7 +256,7 @@ class _SimuladorState extends State<Simulador> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 itemCount: visibleItems.length,
                 itemExtent:
-                    80, // Aumentei o valor para melhorar a visibilidade dos itens
+                    60, // Aumentei o valor para melhorar a visibilidade dos itens
                 itemBuilder: (context, index) {
                   final item = visibleItems[index];
                   final isProduct = item['tipo'] == 'Produto';
