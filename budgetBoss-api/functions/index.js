@@ -153,7 +153,7 @@ app.patch("/atualizarSaldo/:uuid/:saldo", function (request, response) {
 
 app.patch("/atualizarFase/:uuid/:fase", function (request, response) {
   const uuid = request.params.uuid;
-  const fase = (request.params.fase);
+  const fase = parseFloat(request.params.fase);
 
   if (!uuid) {
     response.status(400).json({ error: "UUID não fornecido" });
