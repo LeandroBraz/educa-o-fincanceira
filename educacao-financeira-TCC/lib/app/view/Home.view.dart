@@ -9,8 +9,10 @@ import 'package:app_educacao_financeira/app/view/CanaisPropaganda.view.dart';
 import 'package:app_educacao_financeira/app/view/In.metas.view.dart';
 import 'package:app_educacao_financeira/app/view/In.propagandas.dart';
 import 'package:app_educacao_financeira/app/view/Inventario.view.dart';
+import 'package:app_educacao_financeira/app/view/Marketplace.view.dart';
 import 'package:app_educacao_financeira/app/view/Produtos.view.dart';
 import 'package:app_educacao_financeira/app/view/quiz.dart';
+import 'package:app_educacao_financeira/app/view/simulador.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +23,10 @@ import 'package:app_educacao_financeira/app/controller/controller.dart';
 
 import '../DAO/Auths.dart';
 import '../DAO/dataBaseInMetas.dart';
+import '../DAO/localStorage.dart';
 import 'ProdutosList.dart';
+
+import 'dart:async';
 
 class Home extends StatefulWidget {
   final controller = Get.put(Controller());
@@ -40,14 +45,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final MainDrawer mainDrawer = MainDrawer();
 
-  // buscarInformacao() async {
-  //   var usuario =
-  //       await buscarLogin(Auths.currentUser.nome, Auths.currentUser.senha);
-  //   print(usuario);
-  //   setState(() {
-  //     //  mostrarQuiz = usuario[0]["SALDO"] > 500;
-  //   });
-  // }
+  Timer? _userRefreshTimer;
 
   _openPopup(context) {
     Alert(
@@ -81,10 +79,11 @@ class _HomeState extends State<Home> {
           widget.inventarioAtual = Inventario(InMetas());
 
           break;
-        // case 2:
-        //   widget.telaHome = widget.controller.prodList;
-        //   widget.inventarioAtual = Inventario(ProdList());
-        //   break;
+        case 2:
+          widget.telaHome = widget.controller.marketplaceView;
+          widget.inventarioAtual = Inventario(InMarketplace());
+          break;
+
         case 3:
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => Quiz(widget.user)));
@@ -98,13 +97,13 @@ class _HomeState extends State<Home> {
         case 5:
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => FinancasView()));
-          // widget.telaHome = widget.controller.financasView;
-          // widget.inventarioAtual = Inventario(FinancasView());
+
           break;
 
         case 6:
-          widget.telaHome = widget.controller.marketplaceView;
-          widget.inventarioAtual = Inventario(InMarketplace());
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Simulador()));
+
           break;
 
         case 7:
@@ -123,8 +122,35 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    //  buscarUsarioLocal();
+    iniciarAgendamento();
+  }
+
+  void iniciarAgendamento() {
+    const tempoAtualizacao = Duration(seconds: 2);
+    _userRefreshTimer = Timer.periodic(tempoAtualizacao, (timer) {
+      buscarUsarioLocal();
+    });
+  }
+
+  @override
+  void dispose() {
+    _userRefreshTimer?.cancel();
+    super.dispose();
+  }
+
+  void buscarUsarioLocal() async {
+    Usuario u = await buscarDadosUsuario();
+    setState(() {
+      widget.user = u;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // // SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setEnabledSystemUIOverlays([]);
     // SystemChrome.setEnabledSystemUIMode([[{}]]);
     return Scaffold(
       appBar: AppBar(
@@ -165,19 +191,18 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(height: 8),
               Visibility(
-                  visible:
-                      widget.user.fase.toString() != 'fase1' ? true : false,
+                  visible: widget.user.fase! > 1 ? true : false,
                   child: ListTile(
                     onTap: () {
                       print(widget.user.fase.toString());
-                      modificarEstado(6);
+                      modificarEstado(2);
                     },
                     leading: Image.asset('assets/imagens/icon_produto.png'),
                     title: Text("Produtos"),
                   )),
               SizedBox(height: 8),
               Visibility(
-                visible: widget.user.fase.toString() == 'fase1' ? true : false,
+                visible: widget.user.fase == 1 ? true : false,
                 child: ListTile(
                   onTap: () {
                     modificarEstado(3);
@@ -188,13 +213,24 @@ class _HomeState extends State<Home> {
               ),
               SizedBox(height: 8),
               Visibility(
-                visible: widget.user.fase.toString() != 'fase1' ? true : false,
+                visible: widget.user.fase! > 1 ? true : false,
                 child: ListTile(
                   onTap: () {
                     modificarEstado(4);
                   },
                   leading: Image.asset('assets/imagens/icon_propaganda.png'),
                   title: Text("Canais de Propaganda"),
+                ),
+              ),
+              SizedBox(height: 8),
+              Visibility(
+                visible: widget.user.fase! > 2 ? true : false,
+                child: ListTile(
+                  onTap: () {
+                    modificarEstado(6);
+                  },
+                  leading: Image.asset('assets/imagens/icon_simulador.png'),
+                  title: Text("Simulador"),
                 ),
               ),
               SizedBox(height: 8),
@@ -207,7 +243,7 @@ class _HomeState extends State<Home> {
               ListTile(
                 onTap: () {
                   print(widget.user.fase.toString());
-                  modificarEstado(8);
+                  modificarEstado(7);
                 },
                 leading: Image.asset('assets/imagens/icon_sair.png'),
                 title: Text("Sair"),

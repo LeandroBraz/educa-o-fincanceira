@@ -4,14 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 
-import 'app/view/simulador.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChannels.textInput.invokeMethod('TextInput.hide');
   await dotenv.load();
 
   runApp(MyApp());
+
+//   void main() {
+//     runApp(
+//       ChangeNotifierProvider(
+//         create: (context) => PurchaseModel(),
+//         child: MyApp(),
+//       ),
+//     );
+//   }
 }
 
 class MyApp extends StatelessWidget {

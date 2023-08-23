@@ -1,3 +1,4 @@
+import 'package:app_educacao_financeira/app/DAO/localStorage.dart';
 import 'package:app_educacao_financeira/app/view/Home.view.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -27,16 +28,7 @@ class _ResultadoState extends State<Resultado> {
       backgroundColor: Colors.purple[50],
       appBar: AppBar(
         backgroundColor: Colors.green[800],
-
         leading: Container(),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       setState(() {});
-        //     },
-        //     icon: const Icon(Icons.refresh),
-        //   ),
-        // ],
         title: const Text('Resultado'),
       ),
       body: Padding(
@@ -57,11 +49,11 @@ class _ResultadoState extends State<Resultado> {
                 width: 500,
                 child: ElevatedButton(
                   onPressed: () {
-                    print(widget.user.uuid);
-                    print(widget.acertos * 100);
-                    upadateValor(widget.user.uuid, (widget.acertos * 100));
+                    updateValor(widget.user.uuid, (widget.acertos * 100));
+                    //    atualizarDadosUsuario(widget.acertos * 100, fase: 'fase2');
                     if (widget.acertos >= 5) {
-                      updateFase(widget.user.uuid, 'fase2');
+                      updateFase(widget.user.uuid, 2);
+                      atualizarDadosUsuario(widget.acertos * 100, fase: 2);
                     }
                     Navigator.pushReplacement(
                         context,

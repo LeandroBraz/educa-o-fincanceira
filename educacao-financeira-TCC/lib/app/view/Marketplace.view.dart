@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:app_educacao_financeira/app/model/dadosCompra.dart';
+import 'package:app_educacao_financeira/app/view/Home.view.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-
-import '../DAO/SCRIPT_IN_METAS_BASE.dart';
+import 'package:get/get.dart';
 import '../DAO/api.dao.dart';
 import '../model/objetoGenerico.dart';
-import 'package:http/http.dart' as http;
 import '../DAO/localStorage.dart';
+import '../provider/produtosProvider.dart';
+import 'package:provider/provider.dart';
 
 class MarketplaceView extends StatefulWidget {
   const MarketplaceView({super.key});
@@ -96,196 +93,67 @@ class _MarketplaceViewState extends State<MarketplaceView> {
                                   'assets/imagens/icon_interrogacao.png'),
                               onTap: () {
                                 showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return StatefulBuilder(
-                                      builder: (context, setState) {
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                          ),
-                                          child: Container(
-                                            height: 200,
-                                            width: 50,
-                                            child: Padding(
-                                              padding: EdgeInsets.all(20.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          child: Text(
-                                                            "Deseja comprar esse item?",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15.0,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Container(
-                                                        child: TextButton(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                        ),
+                                        child: Container(
+                                          height: 300,
+                                          width: 300,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(15.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      _listExpl[index],
+                                                      style: TextStyle(
+                                                          fontSize: 15.0,
+                                                          color: Colors.black),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      child: TextButton(
+                                                          // shape:
+                                                          //     RoundedRectangleBorder(
+                                                          //         borderRadius:
+                                                          //             BorderRadius
+                                                          //                 .circular(
+                                                          //                     20.0)),
+                                                          // color: Colors.green,
                                                           onPressed: () {
                                                             Navigator.pop(
                                                                 context);
                                                           },
                                                           child: Text(
-                                                            "Não",
+                                                            "Ok",
                                                             style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        child: TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return StatefulBuilder(
-                                                                  builder: (context,
-                                                                      setState) {
-                                                                    return Dialog(
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(20.0),
-                                                                      ),
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            300,
-                                                                        width:
-                                                                            400,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              EdgeInsets.all(20.0),
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceEvenly,
-                                                                            children: [
-                                                                              Text(
-                                                                                "Quantos produtos deseja comprar?",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: 15,
-                                                                                ),
-                                                                              ),
-                                                                              // Row(
-                                                                              //   mainAxisAlignment: MainAxisAlignment.center,
-                                                                              //   children: [
-                                                                              //     GestureDetector(
-                                                                              //       onHorizontalDragUpdate: (details) {
-                                                                              //         setState(() {
-                                                                              //           if (details.delta.dx > 0) {
-                                                                              //             // Swipe right: Increase quantity
-                                                                              //             quantity++;
-                                                                              //           } else if (details.delta.dx < 0 && quantity > 1) {
-                                                                              //             // Swipe left: Decrease quantity (minimum 1)
-                                                                              //             quantity--;
-                                                                              //           }
-                                                                              //         });
-                                                                              //       },
-                                                                              //       child: Text(
-                                                                              //         "$quantity",
-                                                                              //         style: TextStyle(
-                                                                              //           fontSize: 30,
-                                                                              //           fontWeight: FontWeight.bold,
-                                                                              //         ),
-                                                                              //       ),
-                                                                              //     ),
-                                                                              //   ],
-                                                                              // ),
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                                children: [
-                                                                                  ElevatedButton(
-                                                                                    onPressed: () {
-                                                                                      setState(() {
-                                                                                        if (quantity > 1) {
-                                                                                          quantity--;
-                                                                                        }
-                                                                                      });
-                                                                                    },
-                                                                                    child: Text("-"),
-                                                                                  ),
-                                                                                  Text("$quantity"),
-                                                                                  ElevatedButton(
-                                                                                    onPressed: () {
-                                                                                      setState(() {
-                                                                                        quantity++;
-                                                                                      });
-                                                                                    },
-                                                                                    child: Text("+"),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                              ElevatedButton(
-                                                                                onPressed: () {
-                                                                                  calcularImpactoProduto(nomeDoCanalParaCompra!);
-                                                                                  atualizacaoDosCampos(_listNomesItens[index].preco!, nomeDoCanalParaCompra!);
-                                                                                  Navigator.pop(context);
-                                                                                  setState(() {
-                                                                                    _listNomesItens[index].ativo = true; // Desabilitar o card aqui
-                                                                                  });
-                                                                                },
-                                                                                child: Text("Confirmar Compra"),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            "Sim",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 15),
+                                                          )),
+                                                    )
+                                                  ],
+                                                )
+                                              ],
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
+                                        ),
+                                      );
+                                    });
                               },
                             ),
                           ),
@@ -328,240 +196,170 @@ class _MarketplaceViewState extends State<MarketplaceView> {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                          ),
-                                          child: Container(
-                                            height:
-                                                250, // Increased height to fit the new input field
-                                            width:
-                                                200, // Adjust width as needed
-                                            child: Padding(
-                                              padding: EdgeInsets.all(20.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          child: Text(
-                                                            "Deseja comprar esse item?",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15.0,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Container(
-                                                        child: TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Text(
-                                                            "Não",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        child: TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return StatefulBuilder(
-                                                                  builder: (context,
-                                                                      setState) {
-                                                                    return Dialog(
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(20.0),
-                                                                      ),
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            300,
-                                                                        width:
-                                                                            400,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              EdgeInsets.all(20.0),
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceEvenly,
-                                                                            children: [
-                                                                              Text(
-                                                                                "Quantos produtos deseja comprar?",
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                  fontSize: 15,
-                                                                                ),
-                                                                              ),
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  GestureDetector(
-                                                                                    onHorizontalDragUpdate: (details) {
-                                                                                      setState(() {
-                                                                                        if (details.delta.dx > 0) {
-                                                                                          // Swipe right: Increase quantity
-                                                                                          quantity++;
-                                                                                        } else if (details.delta.dx < 0 && quantity > 1) {
-                                                                                          // Swipe left: Decrease quantity (minimum 1)
-                                                                                          quantity--;
-                                                                                        }
-                                                                                      });
-                                                                                    },
-                                                                                    child: Text(
-                                                                                      "$quantity",
-                                                                                      style: TextStyle(
-                                                                                        fontSize: 30,
-                                                                                        fontWeight: FontWeight.bold,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                              ElevatedButton(
-                                                                                onPressed: () {
-                                                                                  calcularImpactoProduto(nomeDoCanalParaCompra!);
-                                                                                  atualizacaoDosCampos(_listNomesItens[index].preco!, nomeDoCanalParaCompra!);
-                                                                                  Navigator.pop(context);
-                                                                                  setState(() {
-                                                                                    _listNomesItens[index].ativo = true; // Desabilitar o card aqui
-                                                                                  });
-                                                                                },
-                                                                                child: Text("Confirmar Compra"),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            "Sim",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                        return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(50.0),
                                               ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(50.0),
-                                            ),
-                                            child: Container(
-                                              height: 200,
-                                              width: 50,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(20.0),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Container(
-                                                            child: Text(
-                                                              "item comprado",
-                                                              style: TextStyle(
+                                              child: Container(
+                                                height: 200,
+                                                width: 50,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(20.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              child: Text(
+                                                                "Deseja comprar esse item?",
+                                                                style:
+                                                                    TextStyle(
                                                                   color: Colors
                                                                       .black,
                                                                   fontSize:
-                                                                      15.0),
+                                                                      15.0,
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      children: [
-                                                        Container(
-                                                          child: TextButton(
-                                                              // shape: RoundedRectangleBorder(
-                                                              //     borderRadius:
-                                                              //         BorderRadius
-                                                              //             .circular(
-                                                              //                 20.0)),
-                                                              // color: Colors.red,
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        children: [
+                                                          Container(
+                                                            child: TextButton(
                                                               onPressed: () {
                                                                 Navigator.pop(
                                                                     context);
                                                               },
                                                               child: Text(
-                                                                "Ok",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        15),
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
+                                                                "Não",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return StatefulBuilder(
+                                                                      builder:
+                                                                          (context,
+                                                                              setState) {
+                                                                        return Dialog(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(20.0),
+                                                                          ),
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                300,
+                                                                            width:
+                                                                                400,
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: EdgeInsets.all(20.0),
+                                                                              child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    "Quantos produtos deseja comprar?",
+                                                                                    style: TextStyle(
+                                                                                      color: Colors.black,
+                                                                                      fontSize: 15,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                    children: [
+                                                                                      ElevatedButton(
+                                                                                        onPressed: () {
+                                                                                          setState(() {
+                                                                                            if (quantity > 1) {
+                                                                                              quantity--;
+                                                                                            }
+                                                                                          });
+                                                                                        },
+                                                                                        child: Text("-"),
+                                                                                      ),
+                                                                                      Text("$quantity"),
+                                                                                      ElevatedButton(
+                                                                                        onPressed: () {
+                                                                                          setState(() {
+                                                                                            quantity++;
+                                                                                          });
+                                                                                        },
+                                                                                        child: Text("+"),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                  ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      setState(() => {
+                                                                                            validarCompra(nomeDoCanalParaCompra!, _listNomesItens[index].preco!, quantity, context),
+                                                                                            Navigator.pop(context)
+                                                                                          });
+                                                                                    },
+                                                                                    child: Text("Confirmar Compra"),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                );
+                                                              },
+                                                              child: Text(
+                                                                "Sim",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        });
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
                                   }
                                 },
                               )),
@@ -591,40 +389,51 @@ class _MarketplaceViewState extends State<MarketplaceView> {
   void calcularImpactoProduto(String nomeProduto) async {
     Usuario u = await buscarDadosUsuario();
     int custoProdutoUnidade = 0;
-    int custoProdutoVarejo = 0;
 
     switch (nomeProduto) {
       case 'Informatíca':
         // Produto A
         custoProdutoUnidade = 100;
-        custoProdutoVarejo = 800;
         break;
       case 'Livros':
         // Produto B
         custoProdutoUnidade = 80;
-        custoProdutoVarejo = 600;
         break;
       case 'Eletrodomesticos':
         // Produto C
         custoProdutoUnidade = 60;
-        custoProdutoVarejo = 450;
         break;
       case 'Alimentação':
         // Produto D
         custoProdutoUnidade = 70;
-        custoProdutoVarejo = 500;
         break;
       default:
         break;
     }
+  }
 
-    if (custoProdutoUnidade > 0 && u.saldo! >= custoProdutoUnidade) {
-      u.saldo = u.saldo! - custoProdutoUnidade;
-      print(
-          "Anúncio $nomeProduto foi comprado por $custoProdutoUnidade coins. ${u.saldo}");
-      // aplicar o impacto do anúncio
-    } else {
-      print("Saldo insuficiente para comprar o anúncio $nomeProduto.");
+  int calcularPreco(String nomeProduto, quantidade) {
+    int custoProdutoUnidade = 0;
+
+    switch (nomeProduto) {
+      case 'Informatíca':
+        // Produto A
+        quantidade >= 10 ? custoProdutoUnidade = 80 : custoProdutoUnidade = 100;
+        return custoProdutoUnidade;
+      case 'Livros':
+        // Produto B
+        quantidade >= 10 ? custoProdutoUnidade = 60 : custoProdutoUnidade = 80;
+        return custoProdutoUnidade;
+      case 'Eletrodomesticos':
+        // Produto C
+        quantidade >= 10 ? custoProdutoUnidade = 45 : custoProdutoUnidade = 60;
+        return custoProdutoUnidade;
+      case 'Alimentação':
+        // Produto D
+        quantidade >= 10 ? custoProdutoUnidade = 50 : custoProdutoUnidade = 70;
+        return custoProdutoUnidade;
+      default:
+        return custoProdutoUnidade;
     }
   }
 
@@ -657,12 +466,43 @@ class _MarketplaceViewState extends State<MarketplaceView> {
         });
       }
     } catch (error) {
-      print('erro ao add objt na lista de canais ');
+      print('erro ao add objt na lista de produtos de MarketPalce ');
+    }
+  }
+
+  void validarCompra(
+      String tipoProduto, int preco, int quantity, BuildContext context) async {
+    Usuario user = await buscarDadosUsuario();
+    int precoPorUnidade = calcularPreco(tipoProduto, quantity);
+
+    int valorASerPago = precoPorUnidade * quantity;
+    if (user.saldo! >= valorASerPago) {
+      await atualizacaoDosCampos(preco, tipoProduto, quantity);
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Aviso"),
+            content: Text(
+                "Não foi possível comprar essa quantidade de produtos. Saldo insuficiente."),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
 
-Future<void> atualizacaoDosCampos(int valorSaldo, String nomeCampo) async {
+Future<void> atualizacaoDosCampos(
+    int valorSaldo, String nomeCampo, int quantidade) async {
   try {
     Usuario user = await buscarDadosUsuario();
     if (user == null) {
@@ -672,9 +512,14 @@ Future<void> atualizacaoDosCampos(int valorSaldo, String nomeCampo) async {
 
     var novoSaldo = user.saldo! - valorSaldo;
     var campo = converteCampo(nomeCampo);
-    await atualizaCompra(user.uuid, true, campo);
-    await atualizarDadosUsuario(novoSaldo);
-    await upadateValor(user.uuid, novoSaldo);
+    await atualizaCompra(
+      user.uuid,
+      quantidade,
+      campo,
+    );
+    await atualizarDadosUsuario(novoSaldo, fase: 3);
+    await updateValor(user.uuid, novoSaldo);
+    await updateFase(user.uuid, 3);
     print('Saldo atualizado com sucesso!');
   } catch (e) {
     print('Ocorreu um erro: $e');

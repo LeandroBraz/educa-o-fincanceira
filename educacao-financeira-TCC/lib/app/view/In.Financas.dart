@@ -15,20 +15,6 @@ class InFinancas extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(5.0),
-                // decoration: BoxDecoration(
-                //     color: Colors.grey,
-                //     border: Border.all(
-                //       color: Color.fromARGB(255, 0, 0, 0),
-                //       width: 2,
-                //     ),
-                // boxShadow: [
-                //   BoxShadow(
-                //       color: Colors.grey,
-                //       blurRadius: 4.0,
-                //       spreadRadius: 2.0)
-                // ],
-                //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                // margin: EdgeInsets.only(top: 15, left: 5, right: 5),
                 child: Row(
                   children: [
                     Container(

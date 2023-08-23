@@ -9,7 +9,7 @@ import '../model/Usuario.model.dart';
 import '../model/dadosCompra.dart';
 import 'localStorage.dart';
 
-Future<bool> upadateValor(uuid, saldo) async {
+Future<bool> updateValor(uuid, saldo) async {
   var baseUrl =
       "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/atualizarSaldo";
 

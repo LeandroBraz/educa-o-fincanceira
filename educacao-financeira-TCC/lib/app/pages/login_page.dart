@@ -1,8 +1,7 @@
-import 'package:app_educacao_financeira/app/controller/controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:app_educacao_financeira/app/model/Usuario.model.dart';
 import 'package:app_educacao_financeira/app/view/ModuloSelecao.dart';
-import 'package:flutter/services.dart';
 import '../DAO/Auths.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,54 +13,6 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-Future<Usuario?> loginUsuario(senha, nome) async {
-  var baseUrl =
-      "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/usuariosAtivos";
-
-  // Montando a URL com os parâmetros senha e nome
-  var url = Uri.parse('$baseUrl/$senha/$nome');
-
-  // Realizando a solicitação HTTP
-  var response = await http.get(url);
-  print(response);
-
-  if (response.statusCode == 200) {
-    // A requisição foi bem-sucedida
-    // var data = json.decode(response.body);
-    // return Usuario.fromJson(data);
-    var data = json.decode(response.body);
-    var usuario = Usuario.fromJson(data);
-
-    // Salvando o usuário no local storage
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user', json.encode(usuario.toMap()));
-
-    return usuario;
-  } else {
-    return null;
-  }
-}
-
-void _exibirMensagemDeErro(context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Erro de login"),
-        content: Text("Nome de usuário ou senha inválido."),
-        actions: [
-          TextButton(
-            child: Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final myControllerEmail = TextEditingController();
@@ -71,12 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final nome = TextEditingController();
   final senha = TextEditingController();
 
-  // void salvar() {
-  //   setState(() {
-  //     widget. user.nome = nome.text.toString();
-  //     user.senha = senha.text.toString();
-  //   });
-  // }
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -96,76 +42,55 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.white,
           child: ListView(children: <Widget>[
             SizedBox(
-                width: 250,
-                height: 250,
-                child: Image.asset("assets/imagens/logo_2.png")),
-            SizedBox(
-              height: 20,
+              width: 250,
+              height: 250,
+              child: Image.asset("assets/imagens/logo_2.png"),
             ),
+            SizedBox(height: 20),
             TextFormField(
               controller: nome,
               autofocus: true,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                  labelText: "Nome",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  )),
+                labelText: "Nome",
+                labelStyle: TextStyle(
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                ),
+              ),
               style: TextStyle(fontSize: 20),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira o nome';
+                }
+                return null;
+              },
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20),
             TextFormField(
               controller: senha,
               autofocus: false,
               keyboardType: TextInputType.text,
               obscureText: true,
               decoration: InputDecoration(
-                  labelText: "Senha",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  )),
+                labelText: "Senha",
+                labelStyle: TextStyle(
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                ),
+              ),
               style: TextStyle(fontSize: 20),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira a senha';
+                }
+                return null;
+              },
             ),
-            SizedBox(
-              height: 20,
-            ),
-
-            // TextFormField(
-            //   controller: senha,
-            //   autofocus: true,
-            //   keyboardType: TextInputType.text,
-            //   obscureText: true ,
-            //   decoration: InputDecoration(
-            //       labelText: "Senha",
-            //       labelStyle: TextStyle(
-            //         color: Colors.black38,
-            //         fontWeight:FontWeight.w400,
-            //         fontSize: 20,
-            //       )
-            //   ),
-            //   style: TextStyle(
-            //       fontSize: 20
-            //   ),
-            // ),
-            // Container(
-            //   height: 40,
-            //   alignment: Alignment.centerRight,
-            //   child: TextButton(
-            //     child: Text(
-            //       "Recuperar Senha"
-            //     ),
-            //     onPressed: () {},
-            //   ),
-            //   ),
-            SizedBox(
-              height: 40,
-            ),
+            SizedBox(height: 20),
+            SizedBox(height: 40),
             Container(
               height: 60,
               alignment: Alignment.centerLeft,
@@ -179,57 +104,67 @@ class _LoginPageState extends State<LoginPage> {
                     Color(0xFF2E7D32),
                   ],
                 ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
-              child: SizedBox.expand(
-                child: TextButton(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "Login",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.left,
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
                       ),
-                      Container(
-                        child: SizedBox(
-                          child: Image.asset("assets/imagens/bone.png"),
-                          height: 70,
-                          width: 70,
-                        ),
+                    )
+                  : TextButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            "Login",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          Container(
+                            child: SizedBox(
+                              child: Image.asset("assets/imagens/bone.png"),
+                              height: 70,
+                              width: 70,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      user = await loginUsuario(
-                        senha.text.toString(),
-                        nome.text.toString(),
-                      );
-                      if (user != null) {
-                        print(user);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ModuloSelecao(user)),
-                        );
-                      } else {
-                        _exibirMensagemDeErro(context);
-                      }
-                    }
-                  },
-                ),
-              ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            isLoading = true;
+                          });
+
+                          user = await loginUsuario(
+                            senha.text.toString(),
+                            nome.text.toString(),
+                          );
+
+                          setState(() {
+                            isLoading = false;
+                          });
+
+                          if (user != null) {
+                            print(user);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ModuloSelecao(user),
+                              ),
+                            );
+                          } else {
+                            _exibirMensagemDeErro(context);
+                          }
+                        }
+                      },
+                    ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Container(
               height: 40,
               child: TextButton(
@@ -239,8 +174,10 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () => {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Cadastro()))
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Cadastro()),
+                  ),
                 },
               ),
             ),
@@ -248,6 +185,48 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    return Container();
+  }
+
+  Future<Usuario?> loginUsuario(senha, nome) async {
+    var baseUrl =
+        "https://us-central1-budgetboss-ed3a1.cloudfunctions.net/api/usuariosAtivos";
+
+    // Montando a URL com os parâmetros senha e nome
+    var url = Uri.parse('$baseUrl/$senha/$nome');
+
+    var response = await http.get(url);
+    print(response);
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var usuario = Usuario.fromJson(data);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user', json.encode(usuario.toMap()));
+
+      return usuario;
+    } else {
+      return null;
+    }
+  }
+
+  void _exibirMensagemDeErro(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Erro de login"),
+          content: Text("Nome de usuário ou senha inválido."),
+          actions: [
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
